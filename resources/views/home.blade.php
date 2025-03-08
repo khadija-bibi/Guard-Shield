@@ -1,14 +1,8 @@
-@extends('layouts.auth')
-@section('title', 'Forget-Password')
+@extends('layouts.app')
+@section('title', 'Home')
 @section('content')
     <div class="d-flex flex-col justify-content-center  align-items-center min-vh-100">
-        <div class="custom-container">
-            @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <strong>Success!</strong> {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
+        {{-- <!-- <div class="auth-container">
             <h3 class="text-center fw-bold mb-4" style="color: #005957;">Forget Password?</h3>
             
             <form action="{{ route('password.email') }}" method="POST">
@@ -23,6 +17,9 @@
 
                 <button type="submit" class="btn btn-custom w-100 py-2">Send Reset Link</button>
             </form>
-        </div>
+        </div> --> --}}
+        <a href="" class="btn btn-custom me-1" >Service Request</a>
+        <a href="{{route('company.create')}}" class="btn btn-custom ">Register Company</a>
+
     </div>
 @endsection

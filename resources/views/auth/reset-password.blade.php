@@ -2,7 +2,7 @@
 @section('title', 'Reset-Password')
 @section('content')
     <div class="d-flex justify-content-center align-items-center min-vh-100">
-        <div class="auth-container">
+        <div class="custom-container">
             <h3 class="text-center fw-bold mb-4" style="color: #005957;">Reset Password</h3>
 
             <form action="{{ route('password.update') }}" method="POST">

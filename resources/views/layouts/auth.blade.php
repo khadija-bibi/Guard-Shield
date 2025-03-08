@@ -47,7 +47,7 @@
             background-color: #085d58;
             
         }
-        .auth-container {
+        .custom-container {
             width: 100%;
             max-width: 400px; 
             background: white;

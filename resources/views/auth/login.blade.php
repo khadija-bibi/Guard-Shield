@@ -29,7 +29,7 @@
                     @csrf
                     <div class="mb-3">
                         <label for="email" class="form-label" style="color: #1B4D3E; font-weight: 500;">Email</label>
-                        <input type="email" name="email" class="form-control" id="email" style="border-color: #00827F;">
+                        <input type="email" value="{{old('email')}}" name="email" class="form-control" id="email" style="border-color: #00827F;">
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label" style="color: #1B4D3E; font-weight: 500;">Password</label>

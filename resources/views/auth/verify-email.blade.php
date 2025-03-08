@@ -1,7 +1,7 @@
 @extends('layouts.auth')
 @section('title', 'Email-Verification')
 @section('content')
-    <div class="container d-flex justify-content-center align-items-center">
+    <div class="container d-flex justify-content-center align-items-center  min-vh-100">
         <div class="card p-4 text-center w-50 ">
             <h3 class="fw-bold " style="color: #005957">Verify Your Email</h3>
             <p>We've sent a verification email to your registered email address.</p>
