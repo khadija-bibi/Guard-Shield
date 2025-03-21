@@ -22,6 +22,8 @@ class User extends Authenticatable implements MustVerifyEmail,CanResetPassword
         'name',
         'email',
         'password',
+        'user_type',
+        'created_by',
     ];
 
     /**
@@ -45,5 +47,9 @@ class User extends Authenticatable implements MustVerifyEmail,CanResetPassword
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+    public function company()
+    {
+        return $this->hasOne(Company::class, 'user_id');
     }
 }

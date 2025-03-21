@@ -1,11 +1,10 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Company;
-use Illuminate\Support\Facades\Validator;
 
-class CompanyController extends Controller
+class RequestController extends Controller
 {
     public function create()
     {
@@ -18,8 +17,7 @@ class CompanyController extends Controller
             'name' => 'required|string|max:45|min:3',
             'address' => 'required|string|max:255|min:3',
             'email' => 'required|email|unique:companies,email',
-            'documents' => 'required',
-            'documents.*' => 'mimes:pdf,jpg,png|max:2048',
+            'documents.*' => 'required|file|mimes:pdf,jpg,png|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -33,9 +31,6 @@ class CompanyController extends Controller
             'user_id' => auth()->id(),
         ]);
 
-        $user = auth()->user();
-        $user->company_id = $company->id;
-        $user->save();
         // Handle file uploads
         if ($request->hasFile('documents')) {
             foreach ($request->file('documents') as $file) {

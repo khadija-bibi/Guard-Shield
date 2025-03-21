@@ -1,4 +1,4 @@
-@extends('layouts.auth')
+@extends('layouts.app')
 @section('title', 'Company Onboarding')
 @section('content')
 <div class="d-flex flex-col justify-content-center  align-items-center min-vh-100">
@@ -9,7 +9,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         @endif
-        <h3 class="text-center fw-bold mb-4" style="color: #005957;">Company Registeration</h3>
+        <h3 class="text-center fw-bold mb-4" style="color: #005957;">Service Request</h3>
         
         <form action="{{ route('company.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
@@ -31,7 +31,7 @@
 
             <div class="mb-3">
                 <label for="address" class="form-label fw-medium" style="color: #1B4D3E;">Address</label>
-                <input type="text" value="{{old('address')}}" name="address" class="form-control" id="address" style="border-color: #00827F;">
+                <input type="text" value="{{old('name')}}" name="address" class="form-control" id="address" style="border-color: #00827F;">
                 @error('address')
                     <p class="text-danger font-medium">{{$message}}</p>  
                 @enderror
@@ -39,7 +39,7 @@
             <input type="hidden" name="verification_status" value="0">
             <div class="mb-3">
                 <label for="documents" class="form-label fw-medium" style="color: #1B4D3E;">Upload Documents</label>
-                <input type="file" id="documents" name="documents[]" multiple class="form-control" style="border-color: #00827F;" >
+                <input type="file" id="documents" name="documents[]" multiple class="form-control" style="border-color: #00827F;">
                 @error('documents')
                     <p class="text-danger font-medium">{{$message}}</p>  
                 @enderror

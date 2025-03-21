@@ -21,18 +21,36 @@ class AuthController extends Controller
     }
 
     public function login(Request $request)
-    {
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
-        
-        if (Auth::attempt($credentials)) {
-            return redirect()->route('home');
+{
+    $credentials = $request->validate([
+        'email' => 'required|email',
+        'password' => 'required'
+    ]);
+
+    if (Auth::attempt($credentials)) {
+        $user = auth()->user();
+
+        if ($user->user_type === "superAdmin") {
+            return redirect()->route('dashboard');
         }
 
-        return back()->withErrors(['email' => 'Invalid credentials']);
+        if ($user->user_type === "companyOwner") {
+            $company = $user->company; 
+
+            if ($company) {
+                return redirect()->route('dashboard');
+            }
+            return redirect()->route('company.create');
+        }
+
+        if ($user->user_type === "serviceSeeker") {
+            return redirect()->route('home');
+        }
     }
+
+    return back()->withErrors(['email' => 'Invalid credentials']);
+}
+
 
     public function logout()
     {
@@ -51,6 +69,7 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:8|confirmed',
+            'user_type' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -61,6 +80,7 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'user_type' => $request->user_type,
         ]);
         event(new Registered($user));
         session()->flash('success', 'Your account has been created successfully! You can now log in.');
@@ -122,7 +142,15 @@ class AuthController extends Controller
     public function verifyEmail(EmailVerificationRequest $request)
     {
         $request->fulfill();
-        return redirect()->route('home');
+        $user = auth()->user();
+
+        if ($user->user_type === 0) {
+            return redirect()->route('company.create');
+        }
+
+        if ($user->user_type === 1) {
+            return redirect()->route('home');
+        }
     }
 
     public function resendVerificationEmail(Request $request)

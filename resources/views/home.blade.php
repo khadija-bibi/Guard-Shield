@@ -18,8 +18,14 @@
                 <button type="submit" class="btn btn-custom w-100 py-2">Send Reset Link</button>
             </form>
         </div> --> --}}
-        <a href="" class="btn btn-custom me-1" >Service Request</a>
-        <a href="{{route('company.create')}}" class="btn btn-custom ">Register Company</a>
+        <div>
+            <form action="{{ route('logout') }}" method="POST" >
+                @csrf
+                <button type="submit" class="btn btn-outline-dark">Logout</button>
+            </form>
+        </div>
+        <a href="{{route('request.create')}}" class="btn btn-custom me-1" >Service Request</a>
+        {{-- <a href="{{route('company.create')}}" class="btn btn-custom ">Register Company</a> --}}
 
     </div>
 @endsection

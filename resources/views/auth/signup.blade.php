@@ -10,6 +10,17 @@
                     @method('PUT')
                     @csrf
                     <div class="mb-3">
+                        <label for="user_type" class="form-label" style="color: #1B4D3E; font-weight: 500;">User Type</label>
+                        <select name="user_type" class="form-select" id="user_type" style="border-color: #00827F;">
+                            <option value="" disabled {{ old('user_type') === null ? 'selected' : '' }}>Select User Type</option>
+                            <option value="companyOwner" {{ old('user_type') == 'companyOwner' ? 'selected' : '' }}>Company Owner</option>
+                            <option value="serviceSeeker" {{ old('user_type') == 'serviceSeeker' ? 'selected' : '' }}>Service Seeker</option>
+                        </select>                        
+                        @error('user_type')
+                            <p class="text-danger">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div class="mb-3">
                         <label for="name" class="form-label" style="color: #1B4D3E; font-weight: 500;">Name</label>
                         <input type="text" value="{{old('name')}}" name="name" class="form-control" id="name" style="border-color: #00827F;">
                         @error('name')
@@ -18,7 +29,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="email" class="form-label" style="color: #1B4D3E; font-weight: 500;">Email</label>
-                        <input type="email" value="{{old('email')}}" name="email" class="form-control" id="email" style="border-color: #00827F;">
+                        <input type="text" value="{{old('email')}}" name="email" class="form-control" id="email" style="border-color: #00827F;">
                         @error('email')
                             <p class="text-danger font-medium">{{$message}}</p>  
                         @enderror
