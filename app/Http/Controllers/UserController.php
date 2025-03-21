@@ -22,8 +22,8 @@ class UserController extends Controller
     public function index()
 {
     $users = User::where('created_by', auth()->id())->latest()->get(); // Filter users by current user ID
-    $roles = Role::where('user_id', auth()->id())->orderBy('role_name', 'ASC')->get(); // Filter roles by current user ID
-    dd($roles);
+    $roles = Role::where('created_by', auth()->id())->orderBy('role_name', 'ASC')->get(); // Filter roles by current user ID
+    // dd($roles);
     return view('panel.user-management.users.index', [
         'users' => $users,
         'roles' => $roles,
@@ -47,15 +47,15 @@ class UserController extends Controller
     // $roles = Role::where
     // ('user_id'==auth()->id())->orderBy('name', 'ASC')->get(); // Filter roles by current user ID
 
-    $roles = Role::where('user_id', auth()->id())
-            ->orWhereNull('user_id') // NULL user_id bhi lana hai
+    $roles = Role::where('created_by', auth()->id())
+            ->orWhereNull('created_by') // NULL user_id bhi lana hai
             ->orderBy('role_name', 'ASC')
             ->get();
-
+    dd($roles);
     return view('panel.user-management.users.create', [
         'roles' => $roles,
     ]);
-    // dd($roles);
+    
 }
 
 
@@ -86,9 +86,8 @@ public function store(Request $request)
     // Find role by role_name and assign it
     $role = Role::where('role_name', $request->role)->first();
     if ($role) {
-        $user->syncRoles($role->name); 
+        $user->syncRoles([$role->role_name]); 
     }
-
     return redirect()->route('users.index')->with('success', 'User created successfully');
 }
 

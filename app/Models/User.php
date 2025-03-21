@@ -8,6 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Contracts\Auth\CanResetPassword;
+use Spatie\Permission\Models\Role;
+
 class User extends Authenticatable implements MustVerifyEmail,CanResetPassword
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -51,5 +53,14 @@ class User extends Authenticatable implements MustVerifyEmail,CanResetPassword
     public function company()
     {
         return $this->hasOne(Company::class, 'user_id');
+    }
+
+    public function role()
+    {
+        return $this->hasMany(Role::class, 'created_by');
+    }
+    public function user()
+    {
+        return $this->hasMany(User::class, 'created_by');
     }
 }
