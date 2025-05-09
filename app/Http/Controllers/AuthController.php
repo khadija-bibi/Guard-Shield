@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,6 +20,55 @@ class AuthController extends Controller
     {
         return view('auth.login');
     }
+public function showDashboard()
+{
+    $user = auth()->user();
+
+    $verifiedCompanies = Company::where('verification_status', 'accept')
+                                ->where('is_drop', 0)
+                                ->count();
+    $pendingRequests = Company::where('verification_status', 'pending')->count();
+    $frozenCompanies = Company::where('verification_status', 'accept')
+                                ->where('is_drop', 0)
+                                ->where('is_freeze', 1)
+                                ->count();
+    $users = User::where('created_by', auth()->id())->count();
+
+    if ($user->user_type === "superAdmin") {
+        return view('panel.home.dashboard', [
+            'verifiedCompanies' => $verifiedCompanies,
+            'pendingRequests' => $pendingRequests,
+            'frozenCompanies' => $frozenCompanies,
+            'users' => $users,
+        ]);
+    }
+
+    if ($user->user_type === "companyOwner") {
+            $company = $user->company; 
+
+            if ($company) {
+                return view('panel.home.dashboard', [
+                            'verifiedCompanies' => $verifiedCompanies,
+                            'pendingRequests' => $pendingRequests,
+                            'frozenCompanies' => $frozenCompanies,
+                            'users' => $users,
+                        ]);            
+            }
+            return redirect()->route('company.create');
+        }
+
+        if ($user->user_type === "serviceSeeker") {
+            return redirect()->route('home');
+        }
+        if ($user->user_type === "companyEmployee") {
+            return view('panel.home.dashboard', [
+            'verifiedCompanies' => $verifiedCompanies,
+            'pendingRequests' => $pendingRequests,
+            'frozenCompanies' => $frozenCompanies,
+            'users' => $users,
+        ]);
+        }
+}
 
     public function login(Request $request)
 {
@@ -28,24 +78,7 @@ class AuthController extends Controller
     ]);
 
     if (Auth::attempt($credentials)) {
-        $user = auth()->user();
-
-        if ($user->user_type === "superAdmin") {
-            return redirect()->route('dashboard');
-        }
-
-        if ($user->user_type === "companyOwner") {
-            $company = $user->company; 
-
-            if ($company) {
-                return redirect()->route('dashboard');
-            }
-            return redirect()->route('company.create');
-        }
-
-        if ($user->user_type === "serviceSeeker") {
-            return redirect()->route('home');
-        }
+         return redirect()->route('dashboard');
     }
 
     return back()->withErrors(['email' => 'Invalid credentials']);

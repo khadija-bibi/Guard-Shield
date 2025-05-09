@@ -16,7 +16,9 @@ return new class extends Migration
             $table->string('name', 45);
             $table->string('address', 255);
             $table->string('email')->unique();
-            $table->boolean('verification_status')->default(0);
+            $table->string('verification_status')->default("Pending");
+            $table->boolean('is_freeze')->default(0);
+            $table->boolean('is_drop')->default(0);
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });

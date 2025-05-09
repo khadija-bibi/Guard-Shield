@@ -25,12 +25,13 @@ class RoleController extends Controller
 {
     $roles = Role::with('permissions')
         ->where('created_by', auth()->id()) 
-        ->get();
+        ->paginate(4); 
 
     return view('panel.user-management.roles.index', [
         'roles' => $roles
     ]);
 }
+
 
 
     /**

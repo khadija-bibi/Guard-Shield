@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\CompanyRequestController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -33,9 +34,7 @@ Route::middleware('auth',"verified")->group(function () {
     Route::get('/home', function () {
         return view('home');
     })->name('home');
-    Route::get('/dashboard', function () {
-        return view('panel.home.dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [AuthController::class, 'showDashboard'])->name('dashboard');
     Route::get('/company/create', [CompanyController::class, 'create'])->name('company.create');
     Route::post('/company/store', [CompanyController::class, 'store'])->name('company.store');
 
@@ -55,5 +54,20 @@ Route::middleware('auth',"verified")->group(function () {
     Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
     Route::get('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+
+    Route::get('/company', [CompanyController::class, 'index'])->name('companies.index');
+    Route::get('/company/{id}/detail', [CompanyController::class, 'detail'])->name('companies.detail');
+    Route::get('/company/{id}/docs', [CompanyController::class, 'docs'])->name('companies.docs');
+    Route::get('/documents/download/{id}', [CompanyController::class, 'download'])->name('documents.download');
+
+    Route::post('/companies/freeze/{id}', [CompanyController::class, 'toggleFreeze'])->name('companies.freeze');
+    Route::post('/companies/drop/{id}', [CompanyController::class, 'dropCompany'])->name('companies.drop');
+
+
+    Route::get('/companies-request', [CompanyRequestController::class, 'index'])->name('companies-request.index');
+    Route::get('/company-request/{id}/detail', [CompanyRequestController::class, 'detail'])->name('company-request.detail');
+    Route::get('/company-request/{id}/docs', [CompanyRequestController::class, 'docs'])->name('company-request.docs');
+
+    Route::post('/company/verify/{id}/{status}', [CompanyRequestController::class, 'verifyCompany'])->name('company.verify');
 
 });

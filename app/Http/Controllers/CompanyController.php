@@ -3,10 +3,38 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Company;
+use App\Models\Document;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class CompanyController extends Controller
 {
+    public function index()
+    {
+        // $users = User::where('created_by', auth()->id())->latest()->get(); // Filter users by current user ID
+        // $roles = Role::where('created_by', auth()->id())->orderBy('role_name', 'ASC')->get(); // Filter roles by current user ID
+        // // dd($roles);
+        $companies = Company::Latest()->get();
+        return view('panel.customer-management.companies.index', [
+            'companies' => $companies,
+            // 'roles' => $roles,
+        ]);
+        
+    }
+    public function detail(String $id){
+        $company = Company::with('documents')->findOrFail($id);        
+        return view('panel.customer-management.companies.detail', [
+            'company' => $company,
+            // 'roles' => $roles,
+        ]);
+    }
+    public function docs(String $id){
+        $company = Company::with('documents')->findOrFail($id);        
+        return view('panel.customer-management.companies.docs', [
+            'company' => $company,
+            // 'roles' => $roles,
+        ]);
+    }
     public function create()
     {
         return view('request-form.company.create');
@@ -29,7 +57,6 @@ class CompanyController extends Controller
             'name' => $request->name,
             'address' => $request->address,
             'email' => $request->email,
-            'verification_status' => 0,
             'user_id' => auth()->id(),
         ]);
 
@@ -50,4 +77,37 @@ class CompanyController extends Controller
 
         return redirect()->route('dashboard')->with('success', 'Company details submitted for verification.');
     }
+    public function download($id)
+    {
+        $document = Document::findOrFail($id);
+        // return Storage::download($document->url, $document->name);
+        return Storage::disk('public')->download($document->url, $document->name);
+
+    }
+    public function toggleFreeze(Request $request, $id)
+    {
+        $company = Company::find($id);
+        if ($company) {
+            $company->is_freeze = $request->is_freeze;
+            $company->save();
+
+            $status = $company->is_freeze ? 'frozen' : 'unfrozen';
+            return redirect()->back()->with('success', "Company has been {$status} successfully.");
+        }
+        return redirect()->back()->with('error', 'Company not found.');
+    }
+    public function dropCompany(Request $request, $id)
+    {
+        $company = Company::find($id);
+        if ($company) {
+            $company->is_drop = $request->is_drop;
+            $company->save();
+
+            return redirect()->back()->with('success', 'Company has been dropped successfully.');
+        }
+        return redirect()->back()->with('error', 'Company not found.');
+    }
+
+
+
 }

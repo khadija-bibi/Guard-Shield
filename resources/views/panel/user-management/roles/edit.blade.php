@@ -2,7 +2,9 @@
 @section('title', 'Roles - Edit')
 @section('content')
     <div>
-        <span class="navbar-brand">Home / Dashboard</span>
+        <span class="navbar-brand fw-semibold" style="color: #9e9e9e;">
+            User Management / Roles<span class="text-dark"> / Edit Role</span>
+        </span>
         <div class="bg-white p-5 rounded shadow-sm">
             @if(session('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">

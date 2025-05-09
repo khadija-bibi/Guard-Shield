@@ -56,7 +56,7 @@
             </div>
             <div class="col-md-6 p-5 left-panel d-flex flex-column justify-content-center align-items-center text-center">
                 <div class="transparent-box p-5">
-                    <div><img src="{{ asset('assets/image.png') }}" alt="Image" height="90px" width="100px"></div>
+                    <div><img src="{{ asset('assets/image1.png') }}" alt="Image" height="90px" width="100px"></div>
                     <h2>
                         <span class="logo-text fw-bolder">Guard Shield</span> 
                         <span class="logo-text2 fw-bolder text-white">360</span>
