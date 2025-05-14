@@ -58,6 +58,20 @@ class UserController extends Controller
     ->get();
 
     // dd($roles);
+
+    $roles = Role::where('created_by', auth()->id())
+            ->orWhereNull('created_by') // NULL user_id bhi lana hai
+            ->orderBy('role_name', 'ASC')
+            ->get();
+    $roles = Role::where('id', '!=', 1)
+    ->where(function($query) {
+        $query->where('created_by', auth()->id())
+              ->orWhereNull('created_by');
+    })
+    ->orderBy('role_name', 'ASC')
+    ->get();
+
+    // dd($roles);
     return view('panel.user-management.users.create', [
         'roles' => $roles,
     ]);
@@ -87,11 +101,13 @@ public function store(Request $request)
     $user->password = Hash::make($request->password);
     $user->user_type = "companyEmployee";
     $user->created_by = auth()->id();
+    $user->created_by = auth()->id();
     $user->save();
 
     // Find role by role_name and assign it
     $role = Role::where('role_name', $request->role)->first();
     if ($role) {
+        $user->syncRoles([$role->name]); 
         $user->syncRoles([$role->name]); 
     }
     return redirect()->route('users.index')->with('success', 'User created successfully');
