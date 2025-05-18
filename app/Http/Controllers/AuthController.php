@@ -115,8 +115,8 @@ public function showDashboard()
             'password' => Hash::make($request->password),
             'user_type' => $request->user_type,
         ]);
-        // event(new Registered($user));
-        $user->sendEmailVerificationNotification();
+        Auth::login($user);
+        event(new Registered($user));
         session()->flash('success', 'Your account has been created successfully! You can now log in.');
         return redirect()->route('login');
     }
@@ -178,11 +178,11 @@ public function showDashboard()
         $request->fulfill();
         $user = auth()->user();
 
-        if ($user->user_type === 0) {
+        if ($user->user_type === 'superAdmin') {
             return redirect()->route('company.create');
         }
 
-        if ($user->user_type === 1) {
+        if ($user->user_type === 'companyOwner') {
             return redirect()->route('home');
         }
     }
