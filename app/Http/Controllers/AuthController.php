@@ -115,7 +115,8 @@ public function showDashboard()
             'password' => Hash::make($request->password),
             'user_type' => $request->user_type,
         ]);
-        event(new Registered($user));
+        // event(new Registered($user));
+        $user->sendEmailVerificationNotification();
         session()->flash('success', 'Your account has been created successfully! You can now log in.');
         return redirect()->route('login');
     }
