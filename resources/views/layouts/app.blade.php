@@ -245,7 +245,7 @@
                             <button type="submit" class="btn btn-outline-dark  ms-2" >Logout</button>
                         </form>
                         <div class="profile-ring bg-dark ms-2">
-                            <img src="assets/image3.png" alt="Profile" class="profile-image" height="50" width="50">
+                            <img src="{{ URL::asset('assets/image3.png') }}" alt="Profile" class="profile-image" height="50" width="50">
                         </div>                        
                     </div>
                 </div>
