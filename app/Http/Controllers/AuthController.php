@@ -34,7 +34,7 @@ public function showDashboard()
                                 ->count();
     $users = User::where('created_by', auth()->id())->count();
 
-    if ($user->user_type === "superAdmin") {
+    if ($user->user_type === "superAdmin" || $user->user_type === "adminEmployee") {
         return view('panel.home.dashboard', [
             'verifiedCompanies' => $verifiedCompanies,
             'pendingRequests' => $pendingRequests,
@@ -114,6 +114,7 @@ public function showDashboard()
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'user_type' => $request->user_type,
+            'created_by' => auth()->id(),
         ]);
         Auth::login($user);
         event(new Registered($user));

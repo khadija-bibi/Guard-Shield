@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Validator;
 
 class RoleController extends Controller
 {
@@ -22,16 +23,57 @@ class RoleController extends Controller
        
 
     // }
-    public function index()
+public function index()
 {
-    $roles = Role::with('permissions')
-        ->where('created_by', auth()->id()) 
-        ->paginate(4); 
+    $user = auth()->user();
+
+    if ($user->user_type === 'superAdmin') {
+        $adminEmployeeIds = User::where('user_type', 'adminEmployee')->pluck('id');
+
+        $roles = Role::with('permissions')
+            ->where(function ($query) use ($user, $adminEmployeeIds) {
+                $query->where('created_by', $user->id)
+                      ->orWhereIn('created_by', $adminEmployeeIds);
+            })
+            ->paginate(4);
+    }else if ($user->user_type === 'adminEmployee') {
+        $superAdminIds = User::where('user_type', 'superAdmin')->pluck('id');
+
+        $roles = Role::with('permissions')
+            ->where(function ($query) use ($user, $superAdminIds) {
+                $query->where('created_by', $user->id)
+                      ->orWhereIn('created_by', $superAdminIds);
+            })
+            ->paginate(4);
+    }else if ($user->user_type === 'companyOwner') {
+        $companyEmployeeIds = User::where('user_type', 'companyEmployee')->where('created_by', auth()->user()->id)->pluck('id');
+
+        $roles = Role::with('permissions')
+            ->where(function ($query) use ($user, $companyEmployeeIds) {
+                $query->where('created_by', $user->id)
+                      ->orWhereIn('created_by', $companyEmployeeIds);
+            })
+            ->paginate(4);
+    }else if ($user->user_type === 'companyEmployee') {
+
+        $roles = Role::with('permissions')
+            ->where(function ($query) use ($user) {
+                $query->where('created_by', $user->id)
+                      ->orWhere('created_by', $user->created_by);
+            })
+            ->paginate(4);
+    } else {
+        // Optional: Fallback for non-superAdmin users
+        $roles = Role::with('permissions')
+            ->where('created_by', $user->id)
+            ->paginate(4);
+    }
 
     return view('panel.user-management.roles.index', [
         'roles' => $roles
     ]);
 }
+
 
 
 

@@ -21,36 +21,93 @@ class UserController extends Controller
     //         'roles'=>$roles
     //     ]);
     // }
-    public function index()
+public function index()
 {
     $authUser = auth()->user();
 
-    if ($authUser->user_type === 'superAdmin'||'adminEmployee') {
-        // SuperAdmin: Only users created by superAdmin and company_id is null
-        $users = User::where('created_by', 1)
-                     ->whereNull('company_id')
-                     ->latest()
-                     ->paginate(4);
+    if ($authUser->user_type === 'superAdmin') {
+        // Get adminEmployees created by this superAdmin
+        $adminEmployeeIds = User::where('user_type', 'adminEmployee')
+                                ->where('created_by', $authUser->id)
+                                ->pluck('id');
 
-        $roles = Role::where('created_by', 1)
-                     ->orderBy('role_name', 'ASC')
-                     ->get();
-    } elseif ($authUser->user_type === 'companyOwner'||'companyEmployee') {
-        // CompanyOwner: Show users where company_id == current user id
-        $users = User::where('company_id', $authUser->id)
-                     ->latest()
-                     ->paginate(4);
+        $users = User::where(function ($query) use ($authUser, $adminEmployeeIds) {
+                    $query->where('created_by', $authUser->id)
+                          ->orWhereIn('created_by', $adminEmployeeIds);
+                })
+                ->latest()
+                ->paginate(4);
 
-        $roles = Role::where('created_by', $authUser->id)
-                     ->orderBy('role_name', 'ASC')
-                     ->get();
+        $roles = Role::where(function ($query) use ($authUser, $adminEmployeeIds) {
+                    $query->where('created_by', $authUser->id)
+                          ->orWhereIn('created_by', $adminEmployeeIds);
+                })
+                ->orderBy('role_name', 'ASC')
+                ->get();
+
+    } else if ($authUser->user_type === 'adminEmployee') {
+        // Show users created by this adminEmployee or their superAdmin
+        $superAdminId = $authUser->created_by;
+
+        $users = User::where(function ($query) use ($authUser, $superAdminId) {
+                    $query->where('created_by', $authUser->id)
+                          ->orWhere('created_by', $superAdminId);
+                })
+                ->latest()
+                ->paginate(4);
+
+        $roles = Role::where(function ($query) use ($authUser, $superAdminId) {
+                    $query->where('created_by', $authUser->id)
+                          ->orWhere('created_by', $superAdminId);
+                })
+                ->orderBy('role_name', 'ASC')
+                ->get();
+
+    } else if ($authUser->user_type === 'companyOwner') {
+        // Get companyEmployees created by this companyOwner
+        $companyEmployeeIds = User::where('user_type', 'companyEmployee')
+                                  ->where('created_by', $authUser->id)
+                                  ->pluck('id');
+
+        $users = User::where(function ($query) use ($authUser, $companyEmployeeIds) {
+                    $query->where('created_by', $authUser->id)
+                          ->orWhereIn('created_by', $companyEmployeeIds);
+                })
+                ->latest()
+                ->paginate(4);
+
+        $roles = Role::where(function ($query) use ($authUser, $companyEmployeeIds) {
+                    $query->where('created_by', $authUser->id)
+                          ->orWhereIn('created_by', $companyEmployeeIds);
+                })
+                ->orderBy('role_name', 'ASC')
+                ->get();
+
+    } else if ($authUser->user_type === 'companyEmployee') {
+        // Show users created by this employee or the owner who created them
+        $companyOwnerId = $authUser->created_by;
+
+        $users = User::where(function ($query) use ($authUser, $companyOwnerId) {
+                    $query->where('created_by', $authUser->id)
+                          ->orWhere('created_by', $companyOwnerId);
+                })
+                ->latest()
+                ->paginate(4);
+
+        $roles = Role::where(function ($query) use ($authUser, $companyOwnerId) {
+                    $query->where('created_by', $authUser->id)
+                          ->orWhere('created_by', $companyOwnerId);
+                })
+                ->orderBy('role_name', 'ASC')
+                ->get();
+
     } else {
         abort(403, 'Unauthorized');
     }
 
     return view('panel.user-management.users.index', compact('users', 'roles'));
-    
 }
+
 
     /**
      * Show the form for creating a new resource.
