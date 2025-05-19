@@ -2,6 +2,7 @@
 @section('title', 'Company Onboarding')
 @section('content')
 <div class="d-flex flex-col justify-content-center  align-items-center min-vh-100">
+
     <div class="custom-container">
         @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -36,6 +37,13 @@
                     <p class="text-danger font-medium">{{$message}}</p>  
                 @enderror
             </div>
+            <div class="mb-3">
+                <label for="description" class="form-label fw-medium" style="color: #1B4D3E;">Description</label>
+                <input type="text" value="{{old('description')}}" name="description" class="form-control" id="description" style="border-color: #00827F;">
+                @error('description')
+                    <p class="text-danger font-medium">{{$message}}</p>  
+                @enderror
+            </div>
             <input type="hidden" name="verification_status" value="0">
             <div class="mb-3">
                 <label for="documents" class="form-label fw-medium" style="color: #1B4D3E;">Upload Documents</label>
@@ -47,6 +55,10 @@
             <button type="submit" class="btn btn-custom w-100 py-2">Submit</button>
         </form>
     </div>
+    <form action="{{ route('logout') }}" method="POST" >
+        @csrf
+        <button type="submit" class="btn btn-outline-dark  ms-3" >Logout</button>
+    </form>
 </div>
 {{-- <div class="container mt-5">
     <div class="row justify-content-center">

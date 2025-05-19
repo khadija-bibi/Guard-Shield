@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name', 45);
             $table->string('address', 255);
+            $table->string('description', 255);
             $table->string('email')->unique();
             $table->string('verification_status')->default("Pending");
             $table->boolean('is_freeze')->default(0);

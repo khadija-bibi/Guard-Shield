@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Request;
 
 class RequestController extends Controller
@@ -14,9 +16,10 @@ class RequestController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:45|min:3',
-            'address' => 'required|string|max:255|min:3',
+            'name' => 'required|string|max:45|min:3|unique:companies,name',
+            'address' => 'required|string|max:255|min:3|unique:companies,address',
             'email' => 'required|email|unique:companies,email',
+            'description' => 'required|string|max:255|min:3|unique:companies,description',
             'documents.*' => 'required|file|mimes:pdf,jpg,png|max:2048',
         ]);
 

@@ -178,12 +178,11 @@ public function showDashboard()
         $request->fulfill();
         $user = auth()->user();
 
-        if ($user->user_type === 'superAdmin') {
+        if ($user->user_type === 'companyOwner') {
             return redirect()->route('company.create');
         }
-
-        if ($user->user_type === 'companyOwner') {
-            return redirect()->route('home');
+         if ($user->user_type === 'companyEmployee') {
+            return redirect()->route('company.create');
         }
     }
 

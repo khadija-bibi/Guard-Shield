@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -101,9 +103,8 @@ public function store(Request $request)
     $user->password = Hash::make($request->password);
     $user->user_type = "companyEmployee";
     $user->created_by = auth()->id();
-    $user->created_by = auth()->id();
     $user->save();
-
+    event(new Registered($user));
     // Find role by role_name and assign it
     $role = Role::where('role_name', $request->role)->first();
     if ($role) {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -52,7 +53,15 @@ class RoleController extends Controller
     {
     
             $validator = Validator::make($request->all(), [
-                'name' => 'required|string|max:255|unique:roles,name',
+                'name' => [
+                    'required',
+                    'string',
+                    'max:255',
+                    Rule::unique('roles', 'role_name')->where(function ($query) {
+                        return $query->where('created_by', auth()->id());
+                    }),
+                ],
+
                 'permissions' => 'required|array',
                 'permissions.*' => 'string|exists:permissions,name',
             ]);
@@ -103,7 +112,7 @@ class RoleController extends Controller
     {
         $role = Role::findOrFail($id);
         $validator = Validator::make($request->all(),[
-            'name' => 'required|unique:roles,name,'.$id.',id|min:3'
+            'name' => 'required|unique:roles,role_name,'.$id.',id|min:3'
         ]);
 
         if($validator->passes()){
