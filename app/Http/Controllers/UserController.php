@@ -23,15 +23,32 @@ class UserController extends Controller
     // }
     public function index()
 {
-    $users = User::where('created_by', auth()->id())
-    ->latest()
-    ->paginate(4);
-    $roles = Role::where('created_by', auth()->id())->orderBy('role_name', 'ASC')->get(); // Filter roles by current user ID
-    // dd($roles);
-    return view('panel.user-management.users.index', [
-        'users' => $users,
-        'roles' => $roles,
-    ]);
+    $authUser = auth()->user();
+
+    if ($authUser->user_type === 'superAdmin'||'adminEmployee') {
+        // SuperAdmin: Only users created by superAdmin and company_id is null
+        $users = User::where('created_by', 1)
+                     ->whereNull('company_id')
+                     ->latest()
+                     ->paginate(4);
+
+        $roles = Role::where('created_by', 1)
+                     ->orderBy('role_name', 'ASC')
+                     ->get();
+    } elseif ($authUser->user_type === 'companyOwner'||'companyEmployee') {
+        // CompanyOwner: Show users where company_id == current user id
+        $users = User::where('company_id', $authUser->id)
+                     ->latest()
+                     ->paginate(4);
+
+        $roles = Role::where('created_by', $authUser->id)
+                     ->orderBy('role_name', 'ASC')
+                     ->get();
+    } else {
+        abort(403, 'Unauthorized');
+    }
+
+    return view('panel.user-management.users.index', compact('users', 'roles'));
     
 }
 
@@ -86,6 +103,7 @@ class UserController extends Controller
      */
 public function store(Request $request)
 {
+    $authUser = auth()->user();
     $validator = Validator::make($request->all(), [
         'name' => 'required|min:3',
         'email' => 'required|min:3|email|unique:users,email',
@@ -101,7 +119,12 @@ public function store(Request $request)
     $user->name = $request->name;
     $user->email = $request->email;
     $user->password = Hash::make($request->password);
-    $user->user_type = "companyEmployee";
+    if ($authUser->user_type === 'superAdmin' || $authUser->user_type === 'adminEmployee') {
+        $user->user_type = "adminEmployee";
+    }
+    if ($authUser->user_type === 'companyOwner' || $authUser->user_type === 'companyEmployee') {
+        $user->user_type = "companyEmployee";
+    }
     $user->created_by = auth()->id();
     $user->save();
     

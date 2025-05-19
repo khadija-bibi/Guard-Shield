@@ -31,6 +31,14 @@
                         </tr>
                         <tr class="border-b">
                             <th class="px-6 py-3 text-left" >
+                                Company Description
+                            </th>
+                            <td class="px-6 py-3 text-left">
+                                {{$company->description}}
+                            </td>
+                        </tr>
+                        <tr class="border-b">
+                            <th class="px-6 py-3 text-left" >
                                 Address
                             </th>
                             <td class="px-6 py-3 text-left">
@@ -42,8 +50,7 @@
                                 Status
                             </th>
                             <td class="px-6 py-3 text-left">
-                                {{-- {{$company->address}} --}}
-                                Active
+                                {{$company->verification_status}}
                             </td>
                         </tr>
                         <tr class="border-b">
