@@ -43,7 +43,7 @@ class CompanyController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:45|min:3',
+            'name' => 'required|string|max:45|min:3|unique:companies,email',
             'address' => 'required|string|max:255|min:3',
             'email' => 'required|email|unique:companies,email',
             'documents' => 'required',

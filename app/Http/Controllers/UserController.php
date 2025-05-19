@@ -104,8 +104,7 @@ public function store(Request $request)
     $user->user_type = "companyEmployee";
     $user->created_by = auth()->id();
     $user->save();
-    event(new Registered($user));
-    // Find role by role_name and assign it
+    
     $role = Role::where('role_name', $request->role)->first();
     if ($role) {
         $user->syncRoles([$role->name]); 

@@ -41,15 +41,21 @@
                         {{ $company->is_freeze ? 'Frozen' : 'Active' }}
                     </td>
                     <td class="px-6 py-3 text-center">
+                        @can('view company detail')
                         <a class="btn btn-primary btn-sm" href="{{ route('companies.detail', $company->id) }}">Details</a>
+                        @endcan
+                        @can('freeze/unfreeze company')
                         <a class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#freezeModal">
                             {{ $company->is_freeze ? 'Unfreeze' : 'Freeze' }}
                         </a>
                         @include('components.freezeModal')
+                        @endcan
+                        @can('drop company')
                         <a class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#dropModal">
                             Drop
                         </a>
                         @include('components.dropModal')
+                        @endcan
                 </tr>
                 @endif
                 @endforeach 

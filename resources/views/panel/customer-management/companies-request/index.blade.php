@@ -41,15 +41,21 @@
                         Pending
                     </td>
                     <td class="px-6 py-3 text-center">
+                        @can('view company request detail')
                         <a class="btn btn-primary btn-sm" href="{{ route('company-request.detail', $company->id) }}">Details</a>
+                        @endcan
+                        @can('accept company request')
                         <a class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#acceptModal{{ $company->id }}">
                             Accept
                         </a>
                         @include('components.acceptModal')
+                        @endcan
+                        @can('reject company request')
                         <a class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#rejectModal{{ $company->id }}">
                             Reject
                         </a>
                         @include('components.rejectModal')
+                        @endcan
                     </td>
                 </tr>
                 @endif

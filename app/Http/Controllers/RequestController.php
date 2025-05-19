@@ -46,7 +46,7 @@ class RequestController extends Controller
                 ]);
             }
         }
-
-        return redirect()->route('dashboard')->with('success', 'Company details submitted for verification.');
+dd($request->all());
+        // return redirect()->route('dashboard')->with('success', 'Company details submitted for verification.');
     }
 }

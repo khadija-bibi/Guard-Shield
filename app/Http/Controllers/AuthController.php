@@ -181,9 +181,6 @@ public function showDashboard()
         if ($user->user_type === 'companyOwner') {
             return redirect()->route('company.create');
         }
-         if ($user->user_type === 'companyEmployee') {
-            return redirect()->route('company.create');
-        }
     }
 
     public function resendVerificationEmail(Request $request)
