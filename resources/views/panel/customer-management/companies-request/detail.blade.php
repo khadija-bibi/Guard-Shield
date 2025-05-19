@@ -6,7 +6,10 @@
         <span class="navbar-brand fw-semibold" style="color: #9e9e9e;">
             Customer Management / Request<span class="text-dark"> / Details</span>
         </span>
+
         <div class="bg-white p-5 rounded shadow-sm">
+            <a class="btn-custom btn btn-custom " href="{{route('companies-request.index')}}">Back</a>
+
             <div class="container">
                 <table class="w-full ">
                     <tbody class="bg-white">

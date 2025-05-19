@@ -5,6 +5,7 @@
         <span class="navbar-brand fw-semibold" style="color: #9e9e9e;">
             User Management / Users<span class="text-dark"> / Edit User</span>
         </span>
+
         <div class="bg-white p-5 rounded shadow-sm">
             @if(session('success'))
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -12,6 +13,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
+            <a class="btn-custom btn btn-custom " href="{{route('users.index')}}">Back</a>
 
             <h3 class="text-center fw-bold mb-4" style="color: #005957;">Edit User</h3>
             

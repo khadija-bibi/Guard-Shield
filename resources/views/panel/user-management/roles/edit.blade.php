@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@extends('layouts.app')
 @section('title', 'Roles - Edit')
 @section('content')
     <div>
@@ -12,7 +13,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             @endif
-
+            <a class="btn-custom btn btn-custom " href="{{route('roles.index')}}">Back</a>
             <h3 class="text-center fw-bold mb-4" style="color: #005957;">Edit Role</h3>
             
             <form action="{{ route('roles.update', $role->id) }}" method="POST" enctype="multipart/form-data">

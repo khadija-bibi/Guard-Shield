@@ -7,6 +7,8 @@
             Customer Management / Company / Details<span class="text-dark"> / Documents</span>
         </span> 
         <div class="bg-white p-5 rounded shadow-sm">
+            <a class="btn-custom btn btn-custom " href="{{ route('companies.detail', $company->id)}}">Back</a>
+
             <table class="w-full ">
                 <thead class="bg-gray-50">
                     <tr class="border-b">
