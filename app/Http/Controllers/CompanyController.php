@@ -47,6 +47,7 @@ class CompanyController extends Controller
             'address' => 'required|string|max:255|min:3',
             'email' => 'required|email|unique:companies,email',
             'documents' => 'required',
+            'description' => 'required|string|max:255|min:3',
             'documents.*' => 'mimes:pdf,jpg,png|max:2048',
         ]);
 
@@ -57,6 +58,7 @@ class CompanyController extends Controller
             'name' => $request->name,
             'address' => $request->address,
             'email' => $request->email,
+            'description' => $request->description,
             'user_id' => auth()->id(),
         ]);
 
