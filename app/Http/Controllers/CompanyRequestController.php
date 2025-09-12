@@ -45,7 +45,7 @@ class CompanyRequestController extends Controller
         $company->verification_status = $status;
         $company->save();
 
-        return redirect()->back()->with('success', "Company request has been {$status}ed.");
+        return redirect()->back()->with('success', "Company request has been {$status}.");
     }
 
 

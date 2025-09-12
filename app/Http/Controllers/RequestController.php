@@ -20,7 +20,7 @@ class RequestController extends Controller
             'address' => 'required|string|max:255|min:3',
             'email' => 'required|email|unique:companies,email',
             'description' => 'required|string|max:255|min:3',
-            'documents.*' => 'required|file|mimes:pdf,jpg,png|max:2048',
+            'documents.*' => 'required|file|mimes:pdf,jpg,png|max:5012',
         ]);
 
         if ($validator->fails()) {

@@ -9,7 +9,7 @@
                 Are you sure you want to accept this company request?
             </div>
             <div class="modal-footer">
-                <form action="{{ route('company.verify', ['id' => $company->id, 'status' => 'Accept']) }}" method="POST">
+                <form action="{{ route('company.verify', ['id' => $company->id, 'status' => 'Accepted']) }}" method="POST">
                     @csrf
                     <button type="submit" class="btn btn-success">Yes</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>

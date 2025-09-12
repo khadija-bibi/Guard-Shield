@@ -6,6 +6,8 @@ use App\Http\Controllers\CompanyRequestController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\EmployeeController;
+
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Route;
 
@@ -70,4 +72,11 @@ Route::middleware('auth',"verified")->group(function () {
 
     Route::post('/company/verify/{id}/{status}', [CompanyRequestController::class, 'verifyCompany'])->name('company.verify');
 
+    Route::get('/employees', [EmployeeController::class, 'index'])->name('employees.index');
+    Route::get('/employees/create', [EmployeeController::class, 'create'])->name('employees.create');
+    Route::post('/employees', [EmployeeController::class, 'store'])->name('employees.store');
+    Route::get('/employees/{id}/edit', [EmployeeController::class, 'edit'])->name('employees.edit');
+    Route::put('/employees/{id}', [EmployeeController::class, 'update'])->name('employees.update');
+    Route::get('/employees/{id}', [EmployeeController::class, 'destroy'])->name('employees.destroy');
+   Route::get('/employee/{id}/detail', [EmployeeController::class, 'detail'])->name('employees.detail');
 });

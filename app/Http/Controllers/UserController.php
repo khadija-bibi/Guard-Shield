@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -176,6 +174,7 @@ public function store(Request $request)
     $user->name = $request->name;
     $user->email = $request->email;
     $user->password = Hash::make($request->password);
+    $user->company_id = auth()->user()->company_id;
     if ($authUser->user_type === 'superAdmin' || $authUser->user_type === 'adminEmployee') {
         $user->user_type = "adminEmployee";
     }

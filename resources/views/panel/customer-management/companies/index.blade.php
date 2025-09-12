@@ -26,7 +26,7 @@
             <tbody class="bg-white">
                 @if ($companies -> isNotEmpty())
                 @foreach ( $companies as $key => $company)
-                @if ((!$company->is_drop)&&($company->verification_status==="Accept"))
+                @if ((!$company->is_drop)&&($company->verification_status==="Accepted"))
                 <tr class="border-b">
                     <td class="px-6 py-3 text-left" width="60">
                         {{ $key + 1 }}

@@ -47,6 +47,12 @@ public function showDashboard()
             $company = $user->company; 
 
             if ($company) {
+                if ($company->verification_status == "Pending") {
+                return view('auth.pending-request');
+                }
+                if ($company->verification_status == "Reject") {
+                    return view('auth.rejected-request');
+                }
                 return view('panel.home.dashboard', [
                             'verifiedCompanies' => $verifiedCompanies,
                             'pendingRequests' => $pendingRequests,
@@ -114,8 +120,9 @@ public function showDashboard()
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'user_type' => $request->user_type,
-            'created_by' => auth()->id(),
+            // 'created_by' => auth()->id(),
         ]);
+        $user->created_by = $user->id;
         Auth::login($user);
         event(new Registered($user));
         session()->flash('success', 'Your account has been created successfully! You can now log in.');
