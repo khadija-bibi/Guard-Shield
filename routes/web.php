@@ -7,7 +7,7 @@ use App\Http\Controllers\RequestController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\EmployeeController;
-
+use App\Http\Controllers\ServiceRequestController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Route;
 
@@ -39,9 +39,13 @@ Route::middleware('auth',"verified")->group(function () {
     Route::get('/dashboard', [AuthController::class, 'showDashboard'])->name('dashboard');
     Route::get('/company/create', [CompanyController::class, 'create'])->name('company.create');
     Route::post('/company/store', [CompanyController::class, 'store'])->name('company.store');
+    Route::get('/home', [AuthController::class, 'showHome'])->name('home');
+    Route::get('/service/create', [RequestController::class, 'createServiceReq'])->name('service-request.create');
+    Route::post('/service/store', [RequestController::class, 'storeServiceReq'])->name('service-request.store');
 
-    Route::get('/service-seeker/create', [RequestController::class, 'create'])->name('request.create');
-    Route::post('/service-seeker/store', [RequestController::class, 'store'])->name('request.store');
+    Route::get('/get-zones/{location}', [RequestController::class, 'getZones']);
+    Route::resource('request', RequestController::class);
+
 
     Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
     Route::get('/roles/create', [RoleController::class, 'create'])->name('roles.create');
@@ -78,5 +82,11 @@ Route::middleware('auth',"verified")->group(function () {
     Route::get('/employees/{id}/edit', [EmployeeController::class, 'edit'])->name('employees.edit');
     Route::put('/employees/{id}', [EmployeeController::class, 'update'])->name('employees.update');
     Route::get('/employees/{id}', [EmployeeController::class, 'destroy'])->name('employees.destroy');
-   Route::get('/employee/{id}/detail', [EmployeeController::class, 'detail'])->name('employees.detail');
+    Route::get('/employee/{id}/detail', [EmployeeController::class, 'detail'])->name('employees.detail');
+
+   
+    Route::get('/services-request', [ServiceRequestController::class, 'index'])->name('services-request.index');
+    Route::get('/service-request/{id}/detail', [CompanyRequestController::class, 'detail'])->name('service-request.detail');
+
+    Route::post('/service/verify/{id}/{status}', [CompanyRequestController::class, 'verifyRequest'])->name('service-request.verify');
 });

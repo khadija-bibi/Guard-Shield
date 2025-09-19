@@ -24,8 +24,7 @@
                 <button type="submit" class="btn btn-outline-dark">Logout</button>
             </form>
         </div>
-        <a href="{{route('request.create')}}" class="btn btn-custom me-1" >Service Request</a>
-        {{-- <a href="{{route('company.create')}}" class="btn btn-custom ">Register Company</a> --}}
+        <a href="{{route('service-request.create')}}" class="btn btn-custom me-1" >Service Request</a>
 
     </div>
 @endsection

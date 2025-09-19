@@ -75,8 +75,11 @@ public function showDashboard()
         ]);
         }
 }
-
-    public function login(Request $request)
+public function showHome(){
+    $user = auth()->user();
+    return view('request-form.service.home');
+}
+public function login(Request $request)
 {
     $credentials = $request->validate([
         'email' => 'required|email',
