@@ -86,7 +86,7 @@ Route::middleware('auth',"verified")->group(function () {
 
    
     Route::get('/services-request', [ServiceRequestController::class, 'index'])->name('services-request.index');
-    Route::get('/service-request/{id}/detail', [CompanyRequestController::class, 'detail'])->name('service-request.detail');
+    Route::get('/service-request/{id}/detail', [ServiceRequestController::class, 'detail'])->name('service-request.detail');
 
-    Route::post('/service/verify/{id}/{status}', [CompanyRequestController::class, 'verifyRequest'])->name('service-request.verify');
+    Route::post('/service/verify/{id}/{status}', [ServiceRequestController::class, 'verifyRequest'])->name('service-request.verify');
 });

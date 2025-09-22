@@ -19,51 +19,28 @@ class ServiceRequestController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    
+
+ public function detail(String $id){
+        $request = ServiceRequest::find($id);        
+        return view('panel.CRM.service-request.detail', [
+            'request' => $request,
+            // 'roles' => $roles,
+        ]);
+    }
+    public function verifyRequest($id, $status)
     {
-        //
+        $request = ServiceRequest::find($id);
+
+        if (!$request) {
+            return redirect()->back()->with('error', 'Request not found.');
+        }
+
+        $request->status = $status;
+        $request->save();
+
+        return redirect()->back()->with('success', "Service request has been {$status}.");
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }
