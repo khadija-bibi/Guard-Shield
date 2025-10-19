@@ -17,13 +17,9 @@ return new class extends Migration
             // relation
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
 
-            $table->unsignedBigInteger('location_id');
-            // relation
-            $table->foreign('location_id')->references('id')->on('locations')->onDelete('cascade');
-
-            $table->unsignedBigInteger('area_zone_id');
-            // relation
-            $table->foreign('area_zone_id')->references('id')->on('area_zones')->onDelete('cascade');
+            $table->string('location_address');
+            $table->decimal('location_lat', 10, 7)->nullable();;
+            $table->decimal('location_lng', 10, 7)->nullable();;
             
             $table->string('crewtype');
             $table->text('description',255);
@@ -38,7 +34,18 @@ return new class extends Migration
 
             $table->string('paymentPlan');
             $table->decimal('budget', 12, 2); // e.g. 9999999999.99
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->enum('status', [
+                'PENDING',
+                'ACCEPTED',
+                'REJECTED',
+                'CANCELLED',
+                'COMPLETED'
+            ])->default('PENDING');
+            $table->enum('payment_status', [
+                'PENDING',
+                'DONE',
+                'REFUND',
+            ])->default('PENDING');
             $table->timestamps();
             
 

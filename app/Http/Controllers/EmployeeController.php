@@ -77,6 +77,7 @@ class EmployeeController extends Controller
         'designation' => $request->designation,
         'location' => $request->location,
         'user_id' => $request->user_id,
+        'created_by'=> auth()->user()->id,
         'company_id' => auth()->user()->company_id, // YAHAN ADD KIA
     ]);
 

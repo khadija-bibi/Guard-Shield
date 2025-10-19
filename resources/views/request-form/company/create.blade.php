@@ -52,6 +52,32 @@
                     <p class="text-danger font-medium">{{$message}}</p>  
                 @enderror
             </div>
+            <p class="fw-bold mb-3 d-flex align-items-center gap-2" 
+                style="color: #00827F; font-size: 14px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" 
+                        viewBox="0 0 24 24" fill="none" stroke="#00827F" stroke-width="2" 
+                        stroke-linecap="round" stroke-linejoin="round" 
+                        class="icon icon-tabler icon-tabler-credit-card">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M3 7h18a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-18a2 2 0 0 1 -2 -2v-6a2 2 0 0 1 2 -2" />
+                    <path d="M3 10h18" /><path d="M7 15h.01" /><path d="M11 15h2" />
+                </svg>
+                Account Details
+            </p>
+            <div class="mb-3">
+                <label for="bank_name" class="form-label fw-medium" style="color: #1B4D3E;">Bank Name</label>
+                <input type="text" value="{{old('bank_name')}}" name="description" class="form-control" id="bank_name" style="border-color: #00827F;">
+                @error('bank_name')
+                    <p class="text-danger font-medium">{{$message}}</p>  
+                @enderror
+            </div>
+            <div class="mb-3">
+                <label for="account_number" class="form-label fw-medium" style="color: #1B4D3E;">Account Number</label>
+                <input type="text" name="account_number" value="{{ old('account_number') }}" class="form-control" id="account_number" style="border-color: #00827F;">
+                @error('account_number')
+                    <p class="text-danger font-medium">{{ $message }}</p>
+                @enderror
+            </div>
             <button type="submit" class="btn btn-custom w-100 py-2">Submit</button>
         </form>
     </div>

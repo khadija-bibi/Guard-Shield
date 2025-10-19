@@ -4,7 +4,7 @@
 
     <div>
         <span class="navbar-brand fw-semibold" style="color: #9e9e9e;">
-            Customer Management<span class="text-dark"> / Requests</span>
+            CRM<span class="text-dark"> / Service Requests</span>
         </span>
         <div class="bg-white p-5 rounded shadow-sm">
             @if(session('success'))
@@ -17,50 +17,52 @@
             <thead class="bg-gray-50">
                 <tr class="border-b">
                     <th class="px-6 py-3 text-left" width="60">#</th>
-                    <th class="px-6 py-3 text-left">Company Name</th>
-                    <th class="px-6 py-3 text-left">Owner</th>
-                    <th class="px-6 py-3 text-left">Created At</th>
+                    <th class="px-6 py-3 text-left">Location</th>
+                    <th class="px-6 py-3 text-left" width="150">Crew Type</th>
                     <th class="px-6 py-3 text-left" width="150">Status</th>
                     <th class="px-6 py-3 text-center">Action</th>
                 </tr>
             </thead>
             <tbody class="bg-white">
-                @if ($companies -> isNotEmpty())
-                @foreach ( $companies as $key => $company)
-                @if (($company->verification_status==="Pending"))
+                @if ($requests -> isNotEmpty())
+                @foreach ( $requests as $key => $request)
+                {{-- @if (($request->status==="pending")) --}}
                 <tr class="border-b">
                     <td class="px-6 py-3 text-left" width="60">
                         {{ $key + 1 }}
                     </td>
                     <td class="px-6 py-3 text-left">
-                        {{$company -> name}}
+                        {{$request -> location_address}}
                     </td>
                     <td class="px-6 py-3 text-left">
-                        {{$company -> user->name}}
+                        {{$request -> crewtype}}
                     </td>
-                    <td class="px-6 py-3 text-left">
-                        {{\Carbon\Carbon::parse($company -> created_at)->format('d M,Y')}}
-                    </td>
+                    
                     <td class="px-6 py-3 text-left" width="150">
-                        Pending
+                        {{$request -> status}}
                     </td>
                     <td class="px-6 py-3 text-center">
-                        @can('view company request detail')
-                        <a class="btn btn-primary btn-sm" href="{{ route('company-request.detail', $company->id) }}">Details</a>
-                        @endcan
-                        @can('verify company request')
-                        <a class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#acceptModal{{ $company->id }}">
+                        {{-- @can('view company request detail') --}}
+                        <a class="btn btn-primary btn-sm" href="{{ route('my-request.detail', $request->id) }}">Details</a>
+                        {{-- @endcan --}}
+                        {{-- @can('view company request detail') --}}
+                        <a class="btn btn-primary btn-sm" href="{{ route('my-request.response', $request->id) }}">View Response</a>
+                        {{-- @endcan --}}
+                        {{-- @can('accept company request') --}}
+                        {{-- <a class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#reqAcceptModal{{ $request->id }}">
                             Accept
-                        </a>
-                        @include('components.acceptModal')
-                        <a class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#rejectModal{{ $company->id }}">
+                        </a> --}}
+                        {{-- @include('components.reqAcceptModal') --}}
+                        {{-- @endcan --}}
+                        {{-- @can('reject company request') --}}
+                        {{-- <a class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#reqRejectModal{{ $request->id }}">
                             Reject
                         </a>
-                        @include('components.rejectModal')
-                        @endcan
+                        @include('components.reqRejectModal') --}}
+                        {{-- @endcan --}}
                     </td>
                 </tr>
-                @endif
+                {{-- @endif --}}
                 @endforeach 
                 @endif
                 

@@ -8,9 +8,19 @@ use Illuminate\Validation\Rule;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Validator;
-
-class RoleController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+class RoleController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return[
+            // new Middleware('permission:view roles', only: ['index']),
+            // new Middleware('permission:edit roles', only: ['edit']),
+            // new Middleware('permission:create roles', only: ['create']),
+            // new Middleware('permission:delete roles', only: ['destroy']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */
@@ -35,7 +45,8 @@ public function index()
                 $query->where('created_by', $user->id)
                       ->orWhereIn('created_by', $adminEmployeeIds);
             })
-            ->paginate(4);
+                ->latest()
+                ->paginate(4);
     }else if ($user->user_type === 'adminEmployee') {
         $superAdminIds = User::where('user_type', 'superAdmin')->pluck('id');
 
@@ -44,6 +55,7 @@ public function index()
                 $query->where('created_by', $user->id)
                       ->orWhereIn('created_by', $superAdminIds);
             })
+            ->latest()
             ->paginate(4);
     }else if ($user->user_type === 'companyOwner') {
         $companyEmployeeIds = User::where('user_type', 'companyEmployee')->where('created_by', auth()->user()->id)->pluck('id');
@@ -53,6 +65,7 @@ public function index()
                 $query->where('created_by', $user->id)
                       ->orWhereIn('created_by', $companyEmployeeIds);
             })
+            ->latest()
             ->paginate(4);
     }else if ($user->user_type === 'companyEmployee') {
 
@@ -61,6 +74,7 @@ public function index()
                 $query->where('created_by', $user->id)
                       ->orWhere('created_by', $user->created_by);
             })
+            ->latest()
             ->paginate(4);
     } else {
         // Optional: Fallback for non-superAdmin users
@@ -119,8 +133,10 @@ public function index()
             'role_name' => $request->name,
             'created_by' =>auth()->id(),
         ]);
+        if (!empty($request->permissions) && is_array($request->permissions)) {
             $permissions = Permission::whereIn('name', $request->permissions)->get();
             $role->syncPermissions($permissions);
+        }
         return redirect()->back()->with('success', 'Role created successfully!');
     }
     
@@ -151,30 +167,31 @@ public function index()
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-    {
-        $role = Role::findOrFail($id);
-        $validator = Validator::make($request->all(),[
-            'name' => 'required|unique:roles,role_name,'.$id.',id|min:3'
-        ]);
+{
+    $role = Role::findOrFail($id);
 
-        if($validator->passes()){
-            $role->role_name = $request->name;
-            $role->save();
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|unique:roles,role_name,' . $id . ',id|min:3',
+        'permission' => 'required|array|min:1',
+        'permission.*' => 'string|exists:permissions,name',
+    ], [
+        'permission.required' => 'At least one permission is required.',
+    ]);
 
-            if(!empty($request->permission)){
-                $role->syncPermissions($request->permission);
-            }
-            else{
-                $role->syncPermissions([]);
-
-            }
-            return redirect()->route('roles.index')->with('success','Role updated successfully');
-
-        }
-        else{
-            return redirect()->route('roles.edit',$id)->withInput()->withErrors($validator);
-        }
+    if ($validator->fails()) {
+        return redirect()->route('roles.edit', $id)
+                         ->withInput()
+                         ->withErrors($validator);
     }
+
+    $role->role_name = $request->name;
+    $role->save();
+
+    $role->syncPermissions($request->permission);
+
+    return redirect()->route('roles.index')->with('success', 'Role updated successfully!');
+}
+
 
     /**
      * Remove the specified resource from storage.

@@ -54,6 +54,16 @@
                             <th class="px-6 py-3 text-left">Designation</th>
                             <td class="px-6 py-3 text-left">{{ $employee->designation }}</td>
                         </tr>
+                        
+                        <tr class="border-b">
+                            <th class="px-6 py-3 text-left">Created At</th>
+                            <td class="px-6 py-3 text-left">{{\Carbon\Carbon::parse($employee -> created_at)->format('d M,Y')}}</td>
+                        </tr>
+
+                        <tr class="border-b">
+                            <th class="px-6 py-3 text-left">Created By</th>
+                            <td class="px-6 py-3 text-left">{{ $employee->creator->name }}</td>
+                        </tr>
 
                         <tr class="border-b">
                             <th class="px-6 py-3 text-left">Image</th>

@@ -19,6 +19,7 @@
                     <th class="px-6 py-3 text-left" width="60">#</th>
                     <th class="px-6 py-3 text-left">Company Name</th>
                     <th class="px-6 py-3 text-left">Owner</th>
+                    <th class="px-6 py-3 text-left">Created At</th>
                     <th class="px-6 py-3 text-left" width="150">Status</th>
                     <th class="px-6 py-3 text-center">Action</th>
                 </tr>
@@ -37,25 +38,28 @@
                     <td class="px-6 py-3 text-left">
                         {{$company -> user->name}}
                     </td>
+                    <td class="px-6 py-3 text-left">
+                        {{\Carbon\Carbon::parse($company -> created_at)->format('d M,Y')}}
+                    </td>
                     <td class="px-6 py-3 text-left" width="150">
                         {{ $company->is_freeze ? 'Frozen' : 'Active' }}
                     </td>
                     <td class="px-6 py-3 text-center">
-                        {{-- @can('view company detail') --}}
+                        @can('view company detail')
                         <a class="btn btn-primary btn-sm" href="{{ route('companies.detail', $company->id) }}">Details</a>
-                        {{-- @endcan --}}
-                        {{-- @can('freeze/unfreeze company') --}}
+                        @endcan
+                        @can('freeze/unfreeze company')
                         <a class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#freezeModal">
                             {{ $company->is_freeze ? 'Unfreeze' : 'Freeze' }}
                         </a>
                         @include('components.freezeModal')
-                        {{-- @endcan --}}
-                        {{-- @can('drop company') --}}
+                        @endcan
+                        @can('drop company')
                         <a class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#dropModal">
                             Drop
                         </a>
                         @include('components.dropModal')
-                        {{-- @endcan --}}
+                        @endcan
                 </tr>
                 @endif
                 @endforeach 

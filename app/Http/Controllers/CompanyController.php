@@ -6,9 +6,20 @@ use App\Models\Company;
 use App\Models\Document;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-
-class CompanyController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+class CompanyController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return[
+            new Middleware('permission:view companies', only: ['index']),
+            new Middleware('permission:view company detail', only: ['detail']),
+            new Middleware('permission:drop company', only: ['dropCompany']),
+            new Middleware('permission:freeze/unfreeze company', only: ['toggleFreeze']),
+            new Middleware('permission:view company doc', only: ['docs']),
+        ];
+    }
     public function index()
     {
         // $users = User::where('created_by', auth()->id())->latest()->get(); // Filter users by current user ID

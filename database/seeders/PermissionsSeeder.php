@@ -27,11 +27,14 @@ class PermissionsSeeder extends Seeder
             'view company detail',
             'drop company',
             'freeze/unfreeze company',
+            'view company doc',
             
             'view companies request',
             'view company request detail',
-            'accept company request',
-            'reject company request',
+            'verify company request',
+            'view company request doc',
+
+            'access guard app'
         ];
 
         foreach ($permissions as $permission) {

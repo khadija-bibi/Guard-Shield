@@ -7,6 +7,7 @@ use App\Http\Controllers\RequestController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\ResponseController;
 use App\Http\Controllers\ServiceRequestController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Route;
@@ -45,6 +46,11 @@ Route::middleware('auth',"verified")->group(function () {
 
     Route::get('/get-zones/{location}', [RequestController::class, 'getZones']);
     Route::resource('request', RequestController::class);
+
+    Route::get('/my-requests', [RequestController::class, 'index'])->name('my-requests.index');
+    Route::get('/my-requests/{id}/detail', [RequestController::class, 'detail'])->name('my-request.detail');
+    Route::get('/my-requests/{id}/response', [ResponseController::class, 'show'])->name('my-request.response');
+    Route::get('/my-requests/{id}/response/guards', [ResponseController::class, 'showGuards'])->name('my-request.response.guards');
 
 
     Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
@@ -89,4 +95,7 @@ Route::middleware('auth',"verified")->group(function () {
     Route::get('/service-request/{id}/detail', [ServiceRequestController::class, 'detail'])->name('service-request.detail');
 
     Route::post('/service/verify/{id}/{status}', [ServiceRequestController::class, 'verifyRequest'])->name('service-request.verify');
+    Route::get('/services-request/{id}/create-response', [ResponseController::class, 'create'])->name('service-request.response.create');
+    Route::post('/services-request/{id}/response', [ResponseController::class, 'store'])->name('service-request.response.store');
+
 });

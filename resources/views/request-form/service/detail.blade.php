@@ -4,53 +4,21 @@
 
     <div>
         <span class="navbar-brand fw-semibold" style="color: #9e9e9e;">
-            Customer Management / Request<span class="text-dark"> / Details</span>
+            CRM / Service Request<span class="text-dark"> / Details</span>
         </span>
 
         <div class="bg-white p-5 rounded shadow-sm">
-            <a class="btn-custom btn btn-custom " href="{{route('companies-request.index')}}">Back</a>
+            <a class="btn-custom btn btn-custom " href="{{route('my-requests.index')}}">Back</a>
 
             <div class="container">
                 <table class="w-full ">
                     <tbody class="bg-white">
                         <tr class="border-b">
                             <th class="px-6 py-3 text-left" >
-                                Company Name
+                                Location
                             </th>
                             <td class="px-6 py-3 text-left">
-                                {{$company->name}}
-                            </td>
-                        </tr>
-                        <tr class="border-b">
-                            <th class="px-6 py-3 text-left" >
-                                Company Email
-                            </th>
-                            <td class="px-6 py-3 text-left">
-                                {{$company->email}}
-                            </td>
-                        </tr>
-                        <tr class="border-b">
-                            <th class="px-6 py-3 text-left" >
-                                Created At
-                            </th>
-                            <td class="px-6 py-3 text-left">
-                                {{\Carbon\Carbon::parse($company -> created_at)->format('d M,Y')}}
-                            </td>
-                        </tr>
-                        <tr class="border-b">
-                            <th class="px-6 py-3 text-left" >
-                                Company Description
-                            </th>
-                            <td class="px-6 py-3 text-left">
-                                {{$company->description}}
-                            </td>
-                        </tr>
-                        <tr class="border-b">
-                            <th class="px-6 py-3 text-left" >
-                                Address
-                            </th>
-                            <td class="px-6 py-3 text-left">
-                                {{$company->address}}
+                                {{$request->location_address}}
                             </td>
                         </tr>
                         <tr class="border-b">
@@ -58,35 +26,87 @@
                                 Status
                             </th>
                             <td class="px-6 py-3 text-left">
-                                {{$company->verification_status}}
+                                {{$request->status}}
                             </td>
                         </tr>
                         <tr class="border-b">
                             <th class="px-6 py-3 text-left" >
-                                Owner
+                                Crew Type
                             </th>
                             <td class="px-6 py-3 text-left">
-                                {{$company->user->name}}
+                                {{$request->crewtype}}
                             </td>
                         </tr>
                         <tr class="border-b">
                             <th class="px-6 py-3 text-left" >
-                                Owner's Email
+                                Description
                             </th>
                             <td class="px-6 py-3 text-left">
-                                {{$company->user->email}}
+                                {{$request->description}}
                             </td>
                         </tr>
                         <tr class="border-b">
                             <th class="px-6 py-3 text-left" >
-                                Documents
+                                Severity
                             </th>
                             <td class="px-6 py-3 text-left">
-                                @can('view company request doc')
-                                <a class="btn btn-info btn-sm" href="{{ route('company-request.docs', $company->id) }}">Open</a>
-                                @endcan
-
-                                {{-- {{$company->user->email}} --}}
+                                {{$request->severity}}
+                            </td>
+                        </tr>
+                         <tr class="border-b">
+                            <th class="px-6 py-3 text-left" >
+                                Date From
+                            </th>
+                            <td class="px-6 py-3 text-left">
+                                {{\Carbon\Carbon::parse($request -> date_from)->format('d M,Y')}}
+                            </td>
+                        </tr>
+                         <tr class="border-b">
+                            <th class="px-6 py-3 text-left" >
+                                Date To
+                            </th>
+                            <td class="px-6 py-3 text-left">
+                                {{\Carbon\Carbon::parse($request -> date_to)->format('d M,Y')}}
+                            </td>
+                        </tr>
+                         <tr class="border-b">
+                            <th class="px-6 py-3 text-left" >
+                                Time From
+                            </th>
+                            <td class="px-6 py-3 text-left">
+                                {{$request->time_from}}
+                            </td>
+                        </tr>
+                         <tr class="border-b">
+                            <th class="px-6 py-3 text-left" >
+                                Time To
+                            </th>
+                            <td class="px-6 py-3 text-left">
+                                {{$request->time_to}}
+                            </td>
+                        </tr>
+                         <tr class="border-b">
+                            <th class="px-6 py-3 text-left" >
+                                Payment Plan
+                            </th>
+                            <td class="px-6 py-3 text-left">
+                                {{$request->paymentPlan}}
+                            </td>
+                        </tr>
+                         <tr class="border-b">
+                            <th class="px-6 py-3 text-left" >
+                                Budget
+                            </th>
+                            <td class="px-6 py-3 text-left">
+                                {{$request->budget}}
+                            </td>
+                        </tr>
+                        <tr class="border-b">
+                            <th class="px-6 py-3 text-left" >
+                                Created At
+                            </th>
+                            <td class="px-6 py-3 text-left">
+                                {{\Carbon\Carbon::parse($request -> created_at)->format('d M,Y')}}
                             </td>
                         </tr>
                     </tbody>

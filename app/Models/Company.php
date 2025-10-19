@@ -12,6 +12,8 @@ class Company extends Model
         'address',
         'email',
         'description',
+        'bank_name',
+        'account_number',
         'verification_status',
         'user_id',
     ];

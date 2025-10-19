@@ -13,6 +13,8 @@ use Illuminate\Support\Str;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class AuthController extends Controller
 {
@@ -52,6 +54,12 @@ public function showDashboard()
                 }
                 if ($company->verification_status == "Reject") {
                     return view('auth.rejected-request');
+                }
+                if ($company->is_freeze) {
+                return view('auth.freeze-company');
+                }
+                if ($company->is_drop) {
+                    return view('auth.drop-company');
                 }
                 return view('panel.home.dashboard', [
                             'verifiedCompanies' => $verifiedCompanies,
@@ -104,7 +112,6 @@ public function login(Request $request)
     {
         return view('auth.signup');
     }
-
     public function signup(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -118,19 +125,39 @@ public function login(Request $request)
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $user=User::create([
+        // 1️⃣ Create user
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'user_type' => $request->user_type,
-            // 'created_by' => auth()->id(),
         ]);
-        $user->created_by = $user->id;
+
+      
+        $user->update(['created_by' => $user->id]);
+
+       
+        if ($request->user_type === 'companyOwner') {
+           
+            $role = Role::create([
+                'name' => 'companyOwner_' . $user->id,
+                'role_name' => 'Company Owner',
+                'created_by' => $user->id,
+            ]);
+            $permissions = Permission::all(); 
+            $role->syncPermissions($permissions);
+
+            $user->assignRole($role->name);
+        }
+
         Auth::login($user);
         event(new Registered($user));
+
         session()->flash('success', 'Your account has been created successfully! You can now log in.');
+
         return redirect()->route('login');
     }
+
 
     public function showForgetPassForm()
     {
@@ -191,6 +218,9 @@ public function login(Request $request)
 
         if ($user->user_type === 'companyOwner') {
             return redirect()->route('company.create');
+        }
+        if ($user->user_type === 'serviceSeeker') {
+        return redirect()->route('home');
         }
     }
 

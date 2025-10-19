@@ -7,9 +7,19 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Role;
-
-class UserController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+class UserController extends Controller implements HasMiddleware
 {
+     public static function middleware(): array
+    {
+        return[
+            // new Middleware('permission:view users', only: ['index']),
+            // new Middleware('permission:edit users', only: ['edit']),
+            // new Middleware('permission:create users', only: ['create']),
+            // new Middleware('permission:delete users', only: ['destroy']),
+        ];
+    }
     // public function index()
     // {
     //     $users = User::latest()->get();
@@ -24,7 +34,6 @@ public function index()
     $authUser = auth()->user();
 
     if ($authUser->user_type === 'superAdmin') {
-        // Get adminEmployees created by this superAdmin
         $adminEmployeeIds = User::where('user_type', 'adminEmployee')
                                 ->where('created_by', $authUser->id)
                                 ->pluck('id');
@@ -44,7 +53,6 @@ public function index()
                 ->get();
 
     } else if ($authUser->user_type === 'adminEmployee') {
-        // Show users created by this adminEmployee or their superAdmin
         $superAdminId = $authUser->created_by;
 
         $users = User::where(function ($query) use ($authUser, $superAdminId) {
@@ -62,7 +70,6 @@ public function index()
                 ->get();
 
     } else if ($authUser->user_type === 'companyOwner') {
-        // Get companyEmployees created by this companyOwner
         $companyEmployeeIds = User::where('user_type', 'companyEmployee')
                                   ->where('created_by', $authUser->id)
                                   ->pluck('id');
@@ -82,7 +89,6 @@ public function index()
                 ->get();
 
     } else if ($authUser->user_type === 'companyEmployee') {
-        // Show users created by this employee or the owner who created them
         $companyOwnerId = $authUser->created_by;
 
         $users = User::where(function ($query) use ($authUser, $companyOwnerId) {
@@ -118,39 +124,41 @@ public function index()
     //         'roles'=> $roles,
     //     ]);
     // }
-    public function create()
+   public function create()
 {
-    // $roles = Role::where
-    // ('user_id'==auth()->id())->orderBy('name', 'ASC')->get(); // Filter roles by current user ID
+    $user = auth()->user();
 
-    $roles = Role::where('id', '!=', 1)
-    ->where(function($query) {
-        $query->where('created_by', auth()->id())
-              ->orWhereNull('created_by');
-    })
-    ->orderBy('role_name', 'ASC')
-    ->get();
+    if ($user->user_type === 'superAdmin') {
+        $adminEmployeeIds = \App\Models\User::where('user_type', 'adminEmployee')->pluck('id');
 
-    // dd($roles);
-
-    $roles = Role::where('created_by', auth()->id())
-            ->orWhereNull('created_by') // NULL user_id bhi lana hai
+        $roles = \Spatie\Permission\Models\Role::whereNotIn('role_name', ['Super Admin'])
+            ->where(function ($query) use ($user, $adminEmployeeIds) {
+                $query->where('created_by', $user->id)
+                      ->orWhereIn('created_by', $adminEmployeeIds);
+            })
             ->orderBy('role_name', 'ASC')
             ->get();
-    $roles = Role::where('id', '!=', 1)
-    ->where(function($query) {
-        $query->where('created_by', auth()->id())
-              ->orWhereNull('created_by');
-    })
-    ->orderBy('role_name', 'ASC')
-    ->get();
 
-    // dd($roles);
+    } elseif (in_array($user->user_type, ['companyOwner', 'companyEmployee'])) {
+        $companyOwnerId = $user->user_type === 'companyOwner' ? $user->id : $user->created_by;
+
+        $roles = \Spatie\Permission\Models\Role::whereNotIn('role_name', ['Company Owner'])
+            ->where(function ($query) use ($companyOwnerId) {
+                $query->where('created_by', $companyOwnerId);
+            })
+            ->orderBy('role_name', 'ASC')
+            ->get();
+    } else {
+        $roles = \Spatie\Permission\Models\Role::where('created_by', $user->id)
+            ->orderBy('role_name', 'ASC')
+            ->get();
+    }
+
     return view('panel.user-management.users.create', [
         'roles' => $roles,
     ]);
-    
 }
+
 
 
     /**
@@ -184,12 +192,10 @@ public function store(Request $request)
     $user->created_by = auth()->id();
     $user->save();
     
-    $user->markEmailAsVerified(); // Mark email as verified
-    // event(new Registered($user));
-    // Find role by role_name and assign it
+    $user->markEmailAsVerified(); 
+    
     $role = Role::where('role_name', $request->role)->first();
     if ($role) {
-        $user->syncRoles([$role->name]); 
         $user->syncRoles([$role->name]); 
     }
     return redirect()->route('users.index')->with('success', 'User created successfully');
@@ -210,16 +216,44 @@ public function store(Request $request)
      */
     public function edit($id)
 {
-    $user = User::findOrFail($id);
-    $roles = Role::orderBy('role_name', 'ASC')->get();
-    $hasRoles = $user->roles->pluck('role_name')->toArray(); // Get role names
+    $editUser = User::findOrFail($id); // jis user ka edit karna hai
+    $authUser = auth()->user(); // logged-in user
+
+    if ($authUser->user_type === 'superAdmin') {
+        $adminEmployeeIds = \App\Models\User::where('user_type', 'adminEmployee')->pluck('id');
+
+        $roles = \Spatie\Permission\Models\Role::whereNotIn('role_name', ['Super Admin'])
+            ->where(function ($query) use ($authUser, $adminEmployeeIds) {
+                $query->where('created_by', $authUser->id)
+                      ->orWhereIn('created_by', $adminEmployeeIds);
+            })
+            ->orderBy('role_name', 'ASC')
+            ->get();
+
+    } elseif (in_array($authUser->user_type, ['companyOwner', 'companyEmployee'])) {
+        $companyOwnerId = $authUser->user_type === 'companyOwner' ? $authUser->id : $authUser->created_by;
+
+        $roles = \Spatie\Permission\Models\Role::whereNotIn('role_name', ['Company Owner'])
+            ->where(function ($query) use ($companyOwnerId) {
+                $query->where('created_by', $companyOwnerId);
+            })
+            ->orderBy('role_name', 'ASC')
+            ->get();
+    } else {
+        $roles = \Spatie\Permission\Models\Role::where('created_by', $authUser->id)
+            ->orderBy('role_name', 'ASC')
+            ->get();
+    }
+
+    $hasRoles = $editUser->roles->pluck('role_name')->toArray(); 
 
     return view('panel.user-management.users.edit', [
-        'user' => $user,
+        'user' => $editUser,
         'roles' => $roles,
         'hasRoles' => $hasRoles
     ]);
 }
+
 
 /**
  * Update the specified resource in storage.

@@ -16,13 +16,10 @@ return new class extends Migration
             $table->string('name', 45);
             $table->unsignedBigInteger('company_id'); 
             $table->unsignedBigInteger('user_id')->nullable(); 
+            $table->unsignedBigInteger('created_by');
             $table->string('phone', 45);
             $table->string('address', 45);
             $table->string('image', 255)->nullable();
-            $table->foreign('user_id', 'fk_employees_users') // custom naam
-                  ->references('id')
-                  ->on('users')
-                  ->onDelete('cascade');
             $table->integer('salary');
             $table->string('salary_type', 45);
             $table->string('qualification', 45);
@@ -30,6 +27,16 @@ return new class extends Migration
             $table->string('location', 45)->nullable();
             $table->dateTime('clock_in')->nullable();
             $table->dateTime('clock_out')->nullable();
+
+            $table->foreign('user_id', 'fk_employees_users') // custom naam
+                  ->references('id')
+                  ->on('users')
+                  ->onDelete('cascade');
+            
+            $table->foreign('created_by')
+                  ->references('id')
+                  ->on('users')
+                  ->onDelete('set null');
             $table->timestamps();
         });
     }

@@ -31,6 +31,14 @@
                         </tr>
                         <tr class="border-b">
                             <th class="px-6 py-3 text-left" >
+                                Created At
+                            </th>
+                            <td class="px-6 py-3 text-left">
+                                {{\Carbon\Carbon::parse($company -> created_at)->format('d M,Y')}}
+                            </td>
+                        </tr>
+                        <tr class="border-b">
+                            <th class="px-6 py-3 text-left" >
                                 Company Description
                             </th>
                             <td class="px-6 py-3 text-left">
@@ -73,11 +81,13 @@
                             <th class="px-6 py-3 text-left" >
                                 Documents
                             </th>
-                            <td class="px-6 py-3 text-left">
+                            @can('view company doc')
+                                <td class="px-6 py-3 text-left">
                                 <a class="btn btn-info btn-sm" href="{{ route('companies.docs', $company->id) }}">Open</a>
 
                                 {{-- {{$company->user->email}} --}}
                             </td>
+                            @endcan
                         </tr>
                     </tbody>
                 </table>

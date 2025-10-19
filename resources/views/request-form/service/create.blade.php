@@ -28,33 +28,17 @@
                     <p class="text-danger">{{ $message }}</p>
                 @enderror
             </div>
-
-            <div class="mb-3">
-                <label for="location_id" class="form-label fw-medium" style="color: #1B4D3E;">Select location</label>
-                <select id="location_id" name="location_id" class="form-control" style="border-color: #00827F;">
-                    <option value="">-- Select Location --</option>
-                    @foreach($locations as $location)
-                        <option value="{{ $location->id }}" {{ old('location_id') == $location->id ? 'selected' : '' }}>
-                            {{ $location->name }}
-                        </option>
-                    @endforeach
-                </select>
-                @error('location_id')
+            <div class="mb-4">
+                <label class="block">Location Address</label>
+                <input type="text" name="location_address" id="location_address" class="form-control" style="border-color: #00827F;" >
+                <input type="hidden" name="location_lat" id="location_lat">
+                <input type="hidden" name="location_lng" id="location_lng">
+                @error('location_address')
                     <p class="text-danger">{{ $message }}</p>  
                 @enderror
             </div>
 
-            {{-- Zone --}}
-            <div class="mb-3">
-                <label for="area_zone_id" class="form-label fw-medium" style="color: #1B4D3E;">Select Area Zone</label>
-                <select id="area_zone_id" name="area_zone_id" class="form-control" style="border-color: #00827F;">
-                    <option value="">-- Select Area Zone --</option>
-                </select>
-                @error('area_zone_id')
-                    <p class="text-danger">{{ $message }}</p>  
-                @enderror
-            </div>
-
+            {{-- <div id="map" style="height: 400px;" class="rounded shadow"></div> --}}
             <div class="mb-3">
                 <label for="crewtype" class="form-label fw-medium" style="color: #1B4D3E;">Select Crew Type</label>
                 <select id="crewtype" name="crewtype" class="form-control" style="border-color: #00827F;">
@@ -71,7 +55,7 @@
             </div>
             <div class="mb-3">
                 <label for="description" class="form-label fw-medium" style="color: #1B4D3E;">Description</label>
-                <textarea type="text" name="description" class="form-control" id="description" style="border-color: #00827F;">{{old('description')}}</textarea>
+                <textarea type="text" name="description" class="form-control" id="description" placeholder="e.g. Need 5 security guards for night shift at factory premises" style="border-color: #00827F;">{{old('description')}}</textarea>
                 @error('description')
                     <p class="text-danger font-medium">{{$message}}</p>  
                 @enderror
@@ -130,7 +114,7 @@
             </div>
               <div class="mb-3">
                 <label for="budget" class="form-label fw-medium" style="color: #1B4D3E;">Budget</label>
-                <input type="number" placeholder="Enter Budget" value="{{ old('budget') }}" name="budget" class="form-control" id="salary" style="border-color: #00827F;">
+                <input type="number" placeholder="Enter Budget" value="{{ old('budget') }}" name="budget" class="form-control" id="budget" style="border-color: #00827F;">
                 @error('budget')
                     <p class="text-danger font-medium">{{ $message }}</p>  
                 @enderror
@@ -140,28 +124,44 @@
     </div>
 </div>
 
-{{-- AJAX Script for dependent dropdown --}}
-<script>
-    document.getElementById('location_id').addEventListener('change', function () {
-        let locationId = this.value;
-        let zoneSelect = document.getElementById('area_zone_id');
+{{-- <script>
+    mapboxgl.accessToken = 'YOUR_MAPBOX_API_KEY';
 
-        zoneSelect.innerHTML = '<option value="">Loading...</option>';
-
-        if(locationId) {
-            fetch(`/get-zones/${locationId}`)
-                .then(response => response.json())
-                .then(data => {
-                    zoneSelect.innerHTML = '<option value="">-- Select Area Zone --</option>';
-                    data.forEach(zone => {
-                        zoneSelect.innerHTML += `<option value="${zone.id}">${zone.name}</option>`;
-                    });
-                });
-        } else {
-            zoneSelect.innerHTML = '<option value="">-- Select Area Zone --</option>';
-        }
+    const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v11',
+        center: [74.3587, 31.5204], // Lahore default
+        zoom: 10
     });
 
-</script>
+    let marker;
+
+    // On map click
+    map.on('click', function (e) {
+        const lng = e.lngLat.lng;
+        const lat = e.lngLat.lat;
+
+        // Remove old marker
+        if (marker) marker.remove();
+
+        // Add new marker
+        marker = new mapboxgl.Marker({ draggable: true })
+            .setLngLat([lng, lat])
+            .addTo(map);
+
+        // Save values
+        document.getElementById('location_lat').value = lat;
+        document.getElementById('location_lng').value = lng;
+
+        // Reverse Geocode (get address)
+        fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${mapboxgl.accessToken}`)
+            .then(res => res.json())
+            .then(data => {
+                const place = data.features[0]?.place_name || "Unknown location";
+                document.getElementById('location').value = place;
+            });
+    });
+</script> --}}
+
 
 @endsection

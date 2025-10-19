@@ -21,7 +21,7 @@ class ServiceRequestController extends Controller
 
     
 
- public function detail(String $id){
+    public function detail(String $id){
         $request = ServiceRequest::find($id);        
         return view('panel.CRM.service-request.detail', [
             'request' => $request,

@@ -8,7 +8,7 @@ use App\Models\Location;
 use App\Models\Request as ServiceRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Support\Facades\Auth;
 class RequestController extends Controller
 {
     public function create()
@@ -34,6 +34,8 @@ class RequestController extends Controller
             'address' => $request->address,
             'email' => $request->email,
             'description' => $request->description,
+            'bank_name' =>  $request->bank_name,
+            'accout_number' =>  $request->account_number,
             'verification_status' => 0,
             'user_id' => auth()->id(),
         ]);
@@ -49,25 +51,43 @@ class RequestController extends Controller
                 ]);
             }
         }
-dd($request->all());
+        // dd($request->all());
         // return redirect()->route('dashboard')->with('success', 'Company details submitted for verification.');
+    }
+   
+    public function index()
+    {
+        $requests = ServiceRequest::where('users_id', Auth::id())->get(); // ->get() lagana zaroori hai
+
+        return view('request-form.service.index', [
+            'requests' => $requests,
+        ]);
+    }
+
+    public function detail(String $id){
+        $request = ServiceRequest::find($id);        
+        return view('request-form.service.detail', [
+            'request' => $request,
+            // 'roles' => $roles,
+        ]);
     }
     public function createServiceReq()
     {
-        $locations = Location::all();
         $companies = Company::where('verification_status', 'Accepted')
         ->where('is_freeze', 0)
         ->where('is_drop', 0)
         ->get();
-        return view('request-form.service.create', compact('locations', 'companies'));
+        return view('request-form.service.create', compact('companies'));
     }
     public function storeServiceReq(Request $request)
     {
         
         $request->validate([
             'company_id'    => 'required|exists:companies,id',
-            'location_id'      => 'required|exists:locations,id',
-            'area_zone_id'     => 'required|exists:area_zones,id',
+            'location_address'      => 'required|string',
+            // 'location_lat'      => 'required|decimal',
+            // 'location_lng'      => 'required|decimal',
+
             'crewtype'     => 'required|string',
             'description'   => 'nullable|string',
             'severity'      => 'required|string|in:Low,Medium,High',
@@ -83,8 +103,9 @@ dd($request->all());
         $serviceRequest = new ServiceRequest();
         $serviceRequest->users_id = auth()->id();
         $serviceRequest->company_id = $request->company_id;
-        $serviceRequest->location_id   = $request->location_id;
-        $serviceRequest->area_zone_id  = $request->area_zone_id;
+        $serviceRequest->location_address  = $request->location_address;
+        $serviceRequest->location_lat   = $request->location_lat;
+        $serviceRequest->location_lng   = $request->location_lng;
         $serviceRequest->crewtype     = $request->crewtype;
         $serviceRequest->description   = $request->description;
         $serviceRequest->severity      = $request->severity;
@@ -100,9 +121,5 @@ dd($request->all());
         return redirect()->back()->with('success', 'Service Request created successfully!');
     }
 
-    public function getZones($locationId)
-    {
-        $zones = AreaZone::where('location_id', $locationId)->get();
-        return response()->json($zones);
-    }
+   
 }

@@ -25,6 +25,7 @@
                     <th class="px-6 py-3 text-left">Name</th>
                     <th class="px-6 py-3 text-left">Email</th>
                     <th class="px-6 py-3 text-left">Role Name</th>
+                    <th class="px-6 py-3 text-left">Created By</th>
                     <th class="px-6 py-3 text-left" width="150">Created At</th>
 
                     <th class="px-6 py-3 text-center">Action</th>
@@ -47,10 +48,13 @@
                     <td class="px-6 py-3 text-left">
                         {{ $user->roles->first()->role_name ?? 'No Role Assigned' }}
                     </td>
+                    <td class="px-6 py-3 text-left">
+                        {{$user -> user->name}}
+                    </td>
                     <td class="px-6 py-3 text-left" width="150">
                         {{\Carbon\Carbon::parse($user -> created_at)->format('d M,Y')}}
                     </td>
-                    @if ($user->id!=1)
+                    @if($user->user_type != "superAdmin" && $user->user_type != "companyOwner")
                     <td class="px-6 py-3 text-center">
                         {{-- @can('edit users') --}}
                         <a class="btn btn-success btn-sm" href="{{ route('users.edit', $user->id) }}"><svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg></a>

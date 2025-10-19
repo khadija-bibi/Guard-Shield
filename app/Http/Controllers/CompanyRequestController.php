@@ -4,9 +4,19 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Company;
 use Illuminate\Support\Facades\Validator;
-
-class CompanyRequestController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+class CompanyRequestController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return[
+            new Middleware('permission:view companies request', only: ['index']),
+            new Middleware('permission:view company request detail', only: ['detail']),
+            new Middleware('permission:verify company request', only: ['verifyCompany']),
+            new Middleware('permission:view company request doc', only: ['docs']),
+        ];
+    }
     public function index()
     {
         // $users = User::where('created_by', auth()->id())->latest()->get(); // Filter users by current user ID

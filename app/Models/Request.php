@@ -9,8 +9,9 @@ class Request extends Model
     protected $table = 'requests'; 
 
     protected $fillable = [
-        'location_id',
-        'area_zone_id',
+        'location_address',
+        'location_lat',
+        'location_lng',
         'crewtype',
         'description',
         'severity',
@@ -33,13 +34,5 @@ class Request extends Model
     public function company()
     {
         return $this->belongsTo(Company::class, 'company_id');
-    }
-    public function location()
-    {
-        return $this->belongsTo(Location::class, 'location_id');
-    }
-    public function area_zone()
-    {
-        return $this->belongsTo(AreaZone::class, 'area_zone_id');
     }
 }

@@ -25,6 +25,8 @@
             </form>
         </div>
         <a href="{{route('service-request.create')}}" class="btn btn-custom me-1" >Service Request</a>
+        <a href="{{route('my-requests.index')}}" class="btn btn-custom me-1" >My Requests</a>
+
 
     </div>
 @endsection

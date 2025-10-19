@@ -10,8 +10,10 @@ use Spatie\Permission\Models\Permission;
 
 class DatabaseSeeder extends Seeder
 {
+    
     public function run()
     {
+        $this->call(PermissionsSeeder::class);
         $user = User::factory()->create([
             'name' => 'Super Admin',
             'email' => 'superAdmin@gmail.com',
