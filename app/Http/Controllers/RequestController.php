@@ -23,6 +23,8 @@ class RequestController extends Controller
             'address' => 'required|string|max:255|min:3',
             'email' => 'required|email|unique:companies,email',
             'description' => 'required|string|max:255|min:3',
+            'bank_name' => 'required|string|max:255|min:3',
+            'account_number' => 'required|string|max:255|min:3',
             'documents.*' => 'required|file|mimes:pdf,jpg,png|max:5012',
         ]);
 
