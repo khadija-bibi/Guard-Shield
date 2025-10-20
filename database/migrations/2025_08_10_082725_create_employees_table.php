@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name', 45);
             $table->unsignedBigInteger('company_id'); 
             $table->unsignedBigInteger('user_id')->nullable(); 
-            $table->unsignedBigInteger('created_by');
+            $table->unsignedBigInteger('created_by')->nullable();
             $table->string('phone', 45);
             $table->string('address', 45);
             $table->string('image', 255)->nullable();

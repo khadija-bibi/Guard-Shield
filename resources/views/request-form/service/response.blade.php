@@ -56,6 +56,21 @@
                         </tr>
                     </tbody>
                 </table>
+                @if ()
+                {{-- @can('reject company request') --}}
+                <a class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#reqAcceptModal{{ $response->request_id }}">
+                    Accept
+                </a>
+                @include('components.reqAcceptModal')
+                {{-- @endcan --}} 
+                {{-- {-- @can('reject company request') --}} 
+                <a class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#reqCancelModal{{ $response->request_id }}">
+                    Cancel
+                </a>
+                @include('components.reqCancelModal')
+                {{-- @endcan --}}
+                @endif
+                
             </div>
 
         </div>

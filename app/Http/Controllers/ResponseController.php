@@ -54,7 +54,7 @@ class ResponseController extends Controller
 
         // Guards ko attach karo (pivot table me)
         $response->employees()->attach($request->guards);
-        \App\Models\Request::where('id', $id)->update(['status' => 'ACCEPTED']);
+        \App\Models\Request::where('id', $id)->update(['status' => 'RESPONDED']);
         return redirect()->route('services-request.index')
             ->with('success', 'Service Request Response created successfully!');
     }

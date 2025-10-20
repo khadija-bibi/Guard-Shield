@@ -42,5 +42,51 @@ class ServiceRequestController extends Controller
         return redirect()->back()->with('success', "Service request has been {$status}.");
     }
 
+    public function verifyPayment($id, $status)
+    {
+        $request = ServiceRequest::find($id);
+
+        if (!$request) {
+            return redirect()->back()->with('error', 'Service request not found.');
+        }
+
+        // Ensure valid payment statuses only
+        if (!in_array($status, ['PENDING', 'DONE', 'REFUND'])) {
+            return redirect()->back()->with('error', 'Invalid payment status.');
+        }
+
+        $request->payment_status = $status;
+        $request->save();
+
+        return redirect()->back()->with('success', "Payment status has been marked as {$status}.");
+    }
+
+    public function markCompleted($id,$status)
+    {
+        $request = ServiceRequest::find($id);
+
+        if (!$request) {
+            return redirect()->back()->with('error', 'Service request not found.');
+        }
+
+        $request->status = $status;
+        $request->save();
+
+        return redirect()->back()->with('success', "Service request marked as {$status}.");
+    }
+
+    public function confirmResponse($id,$status)
+    {
+        $request = ServiceRequest::find($id);
+
+        if (!$request) {
+            return redirect()->back()->with('error', 'Service request not found.');
+        }
+
+        $request->status = $status;
+        $request->save();
+
+        return redirect()->back()->with('success', "Service request marked as {$status}.");
+    }
 
 }

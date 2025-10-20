@@ -94,8 +94,11 @@ Route::middleware('auth',"verified")->group(function () {
     Route::get('/services-request', [ServiceRequestController::class, 'index'])->name('services-request.index');
     Route::get('/service-request/{id}/detail', [ServiceRequestController::class, 'detail'])->name('service-request.detail');
 
-    Route::post('/service/verify/{id}/{status}', [ServiceRequestController::class, 'verifyRequest'])->name('service-request.verify');
-    Route::get('/services-request/{id}/create-response', [ResponseController::class, 'create'])->name('service-request.response.create');
-    Route::post('/services-request/{id}/response', [ResponseController::class, 'store'])->name('service-request.response.store');
+    Route::post('/service-request/verify/{id}/{status}', [ServiceRequestController::class, 'verifyRequest'])->name('service-request.verify');
+    Route::post('/service-request/verifyPayment/{id}/{status}', [ServiceRequestController::class, 'verifyPayment'])->name('service-request.verifyPayment');
+    Route::post('/service-request/{id}/{status}', [ServiceRequestController::class, 'markCompleted'])->name('service-request.markCompleted');
+    Route::post('/service-request/confirm-response/{id}/{status}', [ServiceRequestController::class, 'confirmResponse'])->name('service-request.confirmResponse');
+    Route::get('/service-request/{id}/create-response', [ResponseController::class, 'create'])->name('service-request.response.create');
+    Route::post('/service-request/{id}/response', [ResponseController::class, 'store'])->name('service-request.response.store');
 
 });

@@ -45,21 +45,13 @@
                         {{-- @can('view company request detail') --}}
                         <a class="btn btn-primary btn-sm" href="{{ route('my-request.detail', $request->id) }}">Details</a>
                         {{-- @endcan --}}
+                        @if ($request->status!="PENDING"&&$request->status!="REJECTED")
                         {{-- @can('view company request detail') --}}
                         <a class="btn btn-primary btn-sm" href="{{ route('my-request.response', $request->id) }}">View Response</a>
-                        {{-- @endcan --}}
-                        {{-- @can('accept company request') --}}
-                        {{-- <a class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#reqAcceptModal{{ $request->id }}">
-                            Accept
-                        </a> --}}
-                        {{-- @include('components.reqAcceptModal') --}}
-                        {{-- @endcan --}}
-                        {{-- @can('reject company request') --}}
-                        {{-- <a class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#reqRejectModal{{ $request->id }}">
-                            Reject
-                        </a>
-                        @include('components.reqRejectModal') --}}
-                        {{-- @endcan --}}
+                        {{-- @endcan --}}  
+                        @endif
+                        
+                        
                     </td>
                 </tr>
                 {{-- @endif --}}
