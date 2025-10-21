@@ -11,52 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 class RequestController extends Controller
 {
-    public function create()
-    {
-        return view('request-form.company.create');
-    }
-
-    public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:45|min:3',
-            'address' => 'required|string|max:255|min:3',
-            'email' => 'required|email|unique:companies,email',
-            'description' => 'required|string|max:255|min:3',
-            'bank_name' => 'required|string|max:255|min:3',
-            'account_number' => 'required|string|max:255|min:3',
-            'documents.*' => 'required|file|mimes:pdf,jpg,png|max:5012',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-        $company = Company::create([
-            'name' => $request->name,
-            'address' => $request->address,
-            'email' => $request->email,
-            'description' => $request->description,
-            'bank_name' =>  $request->bank_name,
-            'accout_number' =>  $request->account_number,
-            'verification_status' => 0,
-            'user_id' => auth()->id(),
-        ]);
-
-        // Handle file uploads
-        if ($request->hasFile('documents')) {
-            foreach ($request->file('documents') as $file) {
-                $path = $file->store('documents', 'public');
-
-                $company->documents()->create([
-                    'name' => $file->getClientOriginalName(),
-                    'url' => $path,
-                ]);
-            }
-        }
-        // dd($request->all());
-        // return redirect()->route('dashboard')->with('success', 'Company details submitted for verification.');
-    }
-   
+    
     public function index()
     {
         $requests = ServiceRequest::where('users_id', Auth::id())->get(); // ->get() lagana zaroori hai
@@ -86,7 +41,7 @@ class RequestController extends Controller
         
         $request->validate([
             'company_id'    => 'required|exists:companies,id',
-            'location_address'      => 'required|string',
+            'location_address'      => 'required|string|max:255',
             // 'location_lat'      => 'required|decimal',
             // 'location_lng'      => 'required|decimal',
 

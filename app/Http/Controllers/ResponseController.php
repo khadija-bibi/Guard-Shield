@@ -36,12 +36,15 @@ class ResponseController extends Controller
      */
     public function store(Request $request, $id)
     {
-    
+        
+    dd($request->all());
+
         $validator = Validator::make($request->all(), [
                     'guards' => 'required|array|min:1',
                     'description' => 'required|string|max:1000',
                     'quotation' => 'required|numeric|min:1',
                 ]);
+                
         if ($validator->fails()) {
                 return redirect()->back()->withErrors($validator)->withInput();
             }
@@ -55,6 +58,7 @@ class ResponseController extends Controller
         // Guards ko attach karo (pivot table me)
         $response->employees()->attach($request->guards);
         \App\Models\Request::where('id', $id)->update(['status' => 'RESPONDED']);
+        dd($request->all());
         return redirect()->route('services-request.index')
             ->with('success', 'Service Request Response created successfully!');
     }

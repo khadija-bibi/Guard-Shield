@@ -59,6 +59,8 @@ class CompanyController extends Controller implements HasMiddleware
             'email' => 'required|email|unique:companies,email',
             'documents' => 'required',
             'description' => 'required|string|max:255|min:3',
+            'bank_name' => 'required|string|max:255|min:3',
+            'account_number' => 'required|string|max:255|min:3',
             'documents.*' => 'mimes:pdf,jpg,png|max:2048',
         ]);
 
@@ -70,6 +72,8 @@ class CompanyController extends Controller implements HasMiddleware
             'address' => $request->address,
             'email' => $request->email,
             'description' => $request->description,
+            'bank_name' =>  $request->bank_name,
+            'account_number' =>  $request->account_number,
             'user_id' => auth()->id(),
         ]);
 

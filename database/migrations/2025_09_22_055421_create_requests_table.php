@@ -36,7 +36,7 @@ return new class extends Migration
             $table->decimal('budget', 12, 2); // e.g. 9999999999.99
             $table->enum('status', [
                 'PENDING',
-                'RESPONSED',
+                'RESPONDED',
                 'REJECTED',
                 'ACCEPTED',
                 'CANCELLED',

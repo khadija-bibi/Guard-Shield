@@ -66,7 +66,7 @@
             </p>
             <div class="mb-3">
                 <label for="bank_name" class="form-label fw-medium" style="color: #1B4D3E;">Bank Name</label>
-                <input type="text" value="{{old('bank_name')}}" name="description" class="form-control" id="bank_name" style="border-color: #00827F;">
+                <input type="text" value="{{old('bank_name')}}" name="bank_name" class="form-control" id="bank_name" style="border-color: #00827F;">
                 @error('bank_name')
                     <p class="text-danger font-medium">{{$message}}</p>  
                 @enderror
