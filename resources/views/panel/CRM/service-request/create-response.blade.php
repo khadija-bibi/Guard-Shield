@@ -12,7 +12,7 @@
 
         <h3 class="text-center fw-bold mb-4" style="color: #005957;">Create Service Request Response</h3>
         
-        <form action="{{ route('service-request.response.store', $request->id) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ url("/service-request-response/{$request->id}") }}" method="POST" enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="request_id" value="{{ $request->id }}">
 
@@ -50,7 +50,7 @@
                     <p class="text-danger font-medium">{{ $message }}</p>  
                 @enderror
             </div>
-            <button type="submit" class="btn btn-custom w-100 py-2">Submit</button>
+            <button type="submit" class="btn btn-custom w-100 py-2">Submit!</button>
         </form>
     </div>
 </div>

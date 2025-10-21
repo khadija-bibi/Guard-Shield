@@ -3,12 +3,12 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CompanyRequestController;
-use App\Http\Controllers\RequestController;
-use App\Http\Controllers\RoleController;
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\RequestController;
 use App\Http\Controllers\ResponseController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\ServiceRequestController;
+use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Support\Facades\Route;
 
@@ -99,6 +99,6 @@ Route::middleware('auth',"verified")->group(function () {
     Route::post('/service-request/{id}/{status}', [ServiceRequestController::class, 'markCompleted'])->name('service-request.markCompleted');
     Route::post('/service-request/confirm-response/{id}/{status}', [ServiceRequestController::class, 'confirmResponse'])->name('service-request.confirmResponse');
     Route::get('/service-request/{id}/create-response', [ResponseController::class, 'create'])->name('service-request.response.create');
-    Route::post('/service-request/{id}/response', [ResponseController::class, 'store'])->name('service-request.response.store');
+    Route::post('/service-request-response/{id}', [ResponseController::class, 'storeResponse']);
 
 });
