@@ -13,7 +13,7 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $employees = Employee::latest()->paginate(10);
+        $employees = Employee::latest()->paginate(5);
         return view('panel.HRM.employees.index', [
             'employees' => $employees,
     

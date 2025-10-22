@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Roles')
+@section('title', 'My Request-Detail')
 @section('content')
 
     <div>
@@ -74,7 +74,7 @@
                                 Time From
                             </th>
                             <td class="px-6 py-3 text-left">
-                                {{$request->time_from}}
+                                {{ \Carbon\Carbon::parse($request->time_from)->format('h:i A') }}
                             </td>
                         </tr>
                          <tr class="border-b">
@@ -82,7 +82,7 @@
                                 Time To
                             </th>
                             <td class="px-6 py-3 text-left">
-                                {{$request->time_to}}
+                                {{ \Carbon\Carbon::parse($request->time_to)->format('h:i A') }}
                             </td>
                         </tr>
                          <tr class="border-b">

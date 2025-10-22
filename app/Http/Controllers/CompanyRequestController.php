@@ -22,7 +22,7 @@ class CompanyRequestController extends Controller implements HasMiddleware
         // $users = User::where('created_by', auth()->id())->latest()->get(); // Filter users by current user ID
         // $roles = Role::where('created_by', auth()->id())->orderBy('role_name', 'ASC')->get(); // Filter roles by current user ID
         // // dd($roles);
-        $companies = Company::Latest()->get();
+        $companies = Company::Latest()->paginate(5); 
         return view('panel.customer-management.companies-request.index', [
             'companies' => $companies,
             // 'roles' => $roles,

@@ -53,7 +53,7 @@ class ResponseController extends Controller
             'quotation' => $request->quotation,
         ]);
 
-        // Guards ko attach karo (pivot table me)
+        
         $response->employees()->attach($request->guards);
         \App\Models\Request::where('id', $id)->update(['status' => 'RESPONDED']);
         return redirect()->route('services-request.index')
@@ -65,13 +65,14 @@ class ResponseController extends Controller
      */
     public function show($id)
     {
-        $response = Response::with('company')->where('request_id', $id)->first(); // ya Response::find($id)
+        $request = ServiceRequest::findOrFail($id);
+        $response = Response::with('company')->where('request_id', $id)->first(); 
         
         if (!$response) {
             return redirect()->back()->with('error', 'No response found for this request.');
         }
 
-        return view('request-form.service.response', compact('response'));
+        return view('request-form.service.response', compact('response','request'));
     }
     public function showGuards($id)
 {

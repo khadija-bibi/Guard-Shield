@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Assigned Guards')
+@section('title', 'My Request-Response-Assigned Guards')
 @section('content')
 
 <div>

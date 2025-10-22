@@ -12,7 +12,7 @@ class ServiceRequestController extends Controller
      */
     public function index()
     {
-        $requests = ServiceRequest::Latest()->get();
+        $requests = ServiceRequest::latest()->latest()->paginate(4);
         return view('panel.CRM.service-request.index', [
             'requests' => $requests,
             // 'roles' => $roles,

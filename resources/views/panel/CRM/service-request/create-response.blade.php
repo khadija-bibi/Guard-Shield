@@ -1,7 +1,10 @@
 @extends('layouts.app')
-@section('title', 'Service Request')
+@section('title', 'Service Request-Create Response')
 @section('content')
 <div class="d-flex flex-col justify-content-center align-items-center min-vh-100">
+    {{-- <span class="navbar-brand fw-semibold" style="color: #9e9e9e;">
+            CRM / Service Request<span class="text-dark"> / Create Response</span>
+    </span><br> --}}
     <div class="custom-container">
         @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">

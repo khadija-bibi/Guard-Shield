@@ -14,8 +14,7 @@ class RequestController extends Controller
     
     public function index()
     {
-        $requests = ServiceRequest::where('users_id', Auth::id())->get(); // ->get() lagana zaroori hai
-
+        $requests = ServiceRequest::where('users_id', Auth::id())->latest()->paginate(5); 
         return view('request-form.service.index', [
             'requests' => $requests,
         ]);
@@ -75,8 +74,8 @@ class RequestController extends Controller
         $serviceRequest->save();
 
         
-        return redirect()->back()->with('success', 'Service Request created successfully!');
-    }
+        return redirect()->route('my-requests.index')->with('success', 'Service Request created successfully!');
 
+    }
    
 }

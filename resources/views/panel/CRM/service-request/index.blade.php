@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Roles')
+@section('title', 'Service Requests')
 @section('content')
 
     <div>
@@ -19,9 +19,9 @@
                     <th class="px-6 py-3 text-left" width="60">#</th>
                     <th class="px-6 py-3 text-left">Name</th>
                     <th class="px-6 py-3 text-left">Location</th>
-                    <th class="px-6 py-3 text-left" width="150">Severity</th>
+                    <th class="px-6 py-3 text-left">Severity</th>
                     <th class="px-6 py-3 text-left" width="150">Status</th>
-                    <th class="px-6 py-3 text-left" width="150">Payment Status</th>
+                    <th class="px-6 py-3 text-left" width="160">Payment Status</th>
                     <th class="px-6 py-3 text-center">Action</th>
                 </tr>
             </thead>
@@ -52,10 +52,9 @@
                                 </span>
                                 @break
                             @case('RESPONDED')
-                                <span class="badge d-inline-flex align-items-center gap-1 px-2 py-1" 
-                                    style="background-color: #0d6efd; color: white;">
+                                <span class="badge text-bg-secondary d-inline-flex align-items-center gap-1 px-2 py-1" >
                                     {{-- Responded Icon --}}
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" 
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" 
                                         viewBox="0 0 24 24" fill="none" stroke="white" 
                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
                                         class="icon icon-tabler icon-tabler-message-dots">
@@ -85,7 +84,7 @@
                                 @break
 
                             @case('CANCELLED')
-                                <span class="badge text-bg-secondary d-inline-flex align-items-center gap-1 px-2 py-1">
+                                <span class="badge text-bg-warning d-inline-flex align-items-center gap-1 px-2 py-1">
                                     {{-- Cancelled Icon --}}
                                     <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-circle-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M10 10l4 4m0 -4l-4 4" /></svg>
                                     Cancelled
@@ -93,16 +92,30 @@
                                 @break
 
                             @case('COMPLETED')
-                                <span class="badge text-bg-info d-inline-flex align-items-center gap-1 px-2 py-1" style="color: white !important;">
+                                <span class="badge text-bg-info d-inline-flex align-items-center gap-1 px-2 py-1" ">
                                     {{-- Completed Icon --}}
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-circle-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M9 12l2 2l4 -4" /></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-circle-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M9 12l2 2l4 -4" /></svg>
                                     Completed
                                 </span>
                                 @break
                         @endswitch
                     </td>
                     <td class="px-6 py-3 text-left width="150"">
-                        {{$request -> payment_status}}
+                        @switch($request->payment_status)
+                            @case('PENDING')
+                                <span class="badge text-bg-primary d-inline-flex align-items-center gap-1 px-2 py-1">
+                                    <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-clock"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0" /><path d="M12 7v5l3 3" /></svg>
+                                    Pending
+                                </span>
+                                @break
+                            @case('DONE')
+                                <span class="badge text-bg-success d-inline-flex align-items-center gap-1 px-2 py-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-circle-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M9 12l2 2l4 -4" /></svg>
+                                    DONE
+                                </span>
+                                @break
+
+                        @endswitch
                     </td>
                     <td class="px-6 py-3 text-center">
                         {{-- @can('view company request detail') --}}
@@ -139,7 +152,13 @@
                         @include('components.reqCompModal')
                         {{-- @endcan --}} 
                         @endif
-
+                        @if ($request->status!="PENDING"&&$request->status!="REJECTED")
+                        {{-- @can('view company request detail') --}}
+                        <a class="btn btn-info btn-sm" href="{{ route('my-request.response', $request->id) }}">
+                            View Response
+                        </a>
+                        {{-- @endcan --}}  
+                        @endif
                         
                     </td>
                 </tr>

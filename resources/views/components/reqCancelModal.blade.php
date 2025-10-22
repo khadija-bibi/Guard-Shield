@@ -8,7 +8,7 @@
 
             <div class="modal-body text-center">
                 <p class="fw-medium text-dark">
-                    Are you sure you want to mark this service request as <span class="fw-bold text-success">Cancelled</span>?
+                    Are you sure you want to mark this service request as <span class="fw-bold text-danger">Cancelled</span>?
                 </p>
                 <p class="text-muted" style="font-size: 14px;">
                     Once confirmed, status will be updated to <b>CANCELLED</b>.
@@ -19,7 +19,7 @@
             <div class="modal-footer justify-content-center">
                 <form action="{{ route('service-request.confirmResponse', ['id' => $response->request_id, 'status' => 'CANCELLED']) }}" method="POST">
                     @csrf
-                    <button type="submit" class="btn btn-success px-4">Yes, Mark as Cancelled</button>
+                    <button type="submit" class="btn btn-danger px-4">Yes, Mark as Cancelled</button>
                     <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">Cancel</button>
                 </form>
             </div>

@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Roles')
+@section('title', 'My Request-Response')
 @section('content')
 
     <div>
@@ -8,7 +8,7 @@
         </span>
 
         <div class="bg-white p-5 rounded shadow-sm">
-            <a class="btn-custom btn btn-custom " href="{{route('services-request.index')}}">Back</a>
+            <a class="btn-custom btn btn-custom " href="{{route('my-requests.index')}}">Back</a>
 
             <div class="container">
                 <table class="w-full">
@@ -56,7 +56,7 @@
                         </tr>
                     </tbody>
                 </table>
-                @if ()
+                @if ($request->status=="RESPONDED")
                 {{-- @can('reject company request') --}}
                 <a class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#reqAcceptModal{{ $response->request_id }}">
                     Accept
@@ -64,7 +64,7 @@
                 @include('components.reqAcceptModal')
                 {{-- @endcan --}} 
                 {{-- {-- @can('reject company request') --}} 
-                <a class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#reqCancelModal{{ $response->request_id }}">
+                <a class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#reqCancelModal{{ $response->request_id }}">
                     Cancel
                 </a>
                 @include('components.reqCancelModal')

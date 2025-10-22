@@ -1,5 +1,5 @@
 @extends('layouts.auth')
-@section('title', 'Service Request')
+@section('title', 'Service Request-Create')
 @section('content')
 <div class="d-flex flex-col justify-content-center align-items-center min-vh-100">
     <div class="custom-container">
