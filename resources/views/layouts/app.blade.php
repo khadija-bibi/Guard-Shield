@@ -228,7 +228,14 @@
                 {{-- <a href="{{ route('clients.index') }}" class="{{ request()->routeIs('services-request.index', 'service-request.detail',) ? 'active' : '' }}"><svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-clipboard-text"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M9 5h-2a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-12a2 2 0 0 0 -2 -2h-2" /><path d="M9 3m0 2a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v0a2 2 0 0 1 -2 2h-2a2 2 0 0 1 -2 -2z" /><path d="M9 12h6" /><path d="M9 16h6" /></svg>
                     Clients</a> --}}
                 {{-- @endcan --}}
+                <p class="menu-head">Incident Reporting</p>
+                <a href="{{ route('incidents.index') }}" class="{{ request()->routeIs('incidents.index') ? 'active' : '' }}"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-alert-triangle"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 9v4" /><path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z" /><path d="M12 16h.01" /></svg>
+                    Incidents</a>
+                <p class="menu-head">Reviews and Ratings</p>
+                <a href="{{ route('feedbacks.index') }}" class="{{ request()->routeIs('incidents.index') ? 'active' : '' }}"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-message-star"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 9h8" /><path d="M8 13h4.5" /><path d="M10.325 19.605l-2.325 1.395v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v4.5" /><path d="M17.8 20.817l-2.172 1.138a.392 .392 0 0 1 -.568 -.41l.415 -2.411l-1.757 -1.707a.389 .389 0 0 1 .217 -.665l2.428 -.352l1.086 -2.193a.392 .392 0 0 1 .702 0l1.086 2.193l2.428 .352a.39 .39 0 0 1 .217 .665l-1.757 1.707l.414 2.41a.39 .39 0 0 1 -.567 .411l-2.172 -1.138z" /></svg>
+                    Feedbacks</a>   
                 @endif
+
             </div>
             
         </div>
@@ -270,6 +277,12 @@
                  {{-- @can('view roles') --}}
                 <a href="{{ route('employees.index') }}" class="{{ request()->routeIs('employees.index', 'employees.create', 'employees.edit') ? 'active' : '' }}"><svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-users-group"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 13a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M8 21v-1a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v1" /><path d="M15 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M17 10h2a2 2 0 0 1 2 2v1" /><path d="M5 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M3 13v-1a2 2 0 0 1 2 -2h2" /></svg>
                     Employees</a>
+                <p class="menu-head">Incident Reporting</p>
+                <a href="{{ route('incidents.index') }}" class="{{ request()->routeIs('incidents.index') ? 'active' : '' }}"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-alert-triangle"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 9v4" /><path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z" /><path d="M12 16h.01" /></svg>
+                    Incidents</a>
+                <p class="menu-head">Reviews and Ratings</p>
+                <a href="{{ route('feedbacks.index') }}" class="{{ request()->routeIs('incidents.index') ? 'active' : '' }}"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-message-star"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M8 9h8" /><path d="M8 13h4.5" /><path d="M10.325 19.605l-2.325 1.395v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v4.5" /><path d="M17.8 20.817l-2.172 1.138a.392 .392 0 0 1 -.568 -.41l.415 -2.411l-1.757 -1.707a.389 .389 0 0 1 .217 -.665l2.428 -.352l1.086 -2.193a.392 .392 0 0 1 .702 0l1.086 2.193l2.428 .352a.39 .39 0 0 1 .217 .665l-1.757 1.707l.414 2.41a.39 .39 0 0 1 -.567 .411l-2.172 -1.138z" /></svg>
+                    Feedbacks</a>
                 {{-- @endcan --}}
             </div>
         </div>
@@ -278,7 +291,19 @@
             <nav class="navbar navbar-light bg-light p-3">
                 <div class="container-fluid">
                     <div  class="d-flex justify-content-end align-items-center justify-evenly w-100">
-                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-bell ms-2"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" /><path d="M9 17v1a3 3 0 0 0 6 0v-1" /></svg>
+                        <div class="dropdown me-3">
+                            <button class="btn btn-light position-relative" id="notificationBell" data-bs-toggle="dropdown">
+                                <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-bell ms-2"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" /><path d="M9 17v1a3 3 0 0 0 6 0v-1" /></svg>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notificationCount">
+                                    0
+                                </span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end p-1"  id="notificationList">
+                                <li class="dropdown-header text-center fw-bold">Notifications</li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li class="text-center text-muted">No new notifications</li>
+                            </ul>
+                        </div>
                         <form action="{{ route('logout') }}" method="POST" >
                             @csrf
                             <button type="submit" class="btn btn-outline-dark  ms-2" >Logout</button>
@@ -294,5 +319,40 @@
             </div>
         </div>
     </div>
+    <script>
+        $(document).ready(function(){
+            function loadNotifications(){
+                $.get("{{ route('notifications.fetch') }}", function(data){
+                    let list = '';
+                    let unreadCount = data.notifications.filter(n => n.read_at === null).length;
+
+                    if(data.notifications.length > 0){
+                        $('#notificationCount').text(unreadCount);
+                        data.notifications.forEach(function(notify){
+                            let isUnread = notify.read_at === null; 
+                            list += `<li class="dropdown-item ${isUnread ? 'fw-bold' : ''}">
+                                        ${notify.data.message}
+                                    </li>`;
+                        });
+                    } else {
+                        $('#notificationCount').text(0);
+                        list = '<li class="text-center text-muted">No new notifications</li>';
+                    }
+
+                    $('#notificationList').html('<li class="dropdown-header text-center fw-bold">Notifications</li><hr>'+list);
+                });
+            }
+
+            loadNotifications();
+            setInterval(loadNotifications, 10000);
+
+            $('#notificationBell').on('click', function(){
+                $.post("{{ route('notifications.markAsRead') }}", {_token:'{{ csrf_token() }}'}, function(){
+                    $('#notificationCount').text(0);
+                });
+            });
+        });
+    </script>
+
 </body>
 </html>

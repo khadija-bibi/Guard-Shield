@@ -19,13 +19,9 @@ class CompanyRequestController extends Controller implements HasMiddleware
     }
     public function index()
     {
-        // $users = User::where('created_by', auth()->id())->latest()->get(); // Filter users by current user ID
-        // $roles = Role::where('created_by', auth()->id())->orderBy('role_name', 'ASC')->get(); // Filter roles by current user ID
-        // // dd($roles);
         $companies = Company::Latest()->paginate(5); 
         return view('panel.customer-management.companies-request.index', [
             'companies' => $companies,
-            // 'roles' => $roles,
         ]);
         
     }
@@ -33,14 +29,12 @@ class CompanyRequestController extends Controller implements HasMiddleware
         $company = Company::with('documents')->findOrFail($id);        
         return view('panel.customer-management.companies-request.detail', [
             'company' => $company,
-            // 'roles' => $roles,
         ]);
     }
     public function docs(String $id){
         $company = Company::with('documents')->findOrFail($id);        
         return view('panel.customer-management.companies-request.docs', [
             'company' => $company,
-            // 'roles' => $roles,
         ]);
     }
     

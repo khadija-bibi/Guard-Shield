@@ -7,7 +7,7 @@
             Customer Management / Request / Details<span class="text-dark"> / Documents</span>
         </span>
         <div class="bg-white p-5 rounded shadow-sm">
-            <a class="btn-custom btn btn-custom " href="{{ route('company-request.detail', $company->id)}}">Back</a>
+            <a class="btn-custom btn btn-custom " href="{{ url()->previous() }}">Back</a>
             <table class="w-full ">
                 <thead class="bg-gray-50">
                     <tr class="border-b">

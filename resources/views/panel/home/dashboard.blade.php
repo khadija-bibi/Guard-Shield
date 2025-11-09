@@ -21,23 +21,40 @@
                   <!-- Right Side Metrics -->
                   <div class="col-md-6">
                     <div class="row g-3">
-                      <div class="col-6">
+                      @if ($user->user_type=="superAdmin"||$user->user_type=="superAdmin")
+                        <div class="col-6">
                         <div class="card-small " style="background-color: #154D4B">
                           <h5>Total Companies Registered</h5>
                           <h3>{{ $verifiedCompanies }}</h3>
                         </div>
                       </div>
                       <div class="col-6">
-                        <div class="card-small " style="background-color: #1F7972">
-                          <h5>Total Requests Pending</h5>
-                          <h3>{{ $pendingRequests }}</h3>
-                          
+                        <div class="card-small " style="background-color: #4FB3A8">
+                          <h5>Total Companies Frozen</h5>
+                          <h3>{{ $frozenCompanies }}</h3>
+                        </div>
+                      </div>
+                      @endif
+                      
+                      @if ($user->user_type=="companyOwner"||$user->user_type=="companyEmployee")
+                      <div class="col-6">
+                        <div class="card-small " style="background-color: #154D4B">
+                          <h5>Total Employees</h5>
+                          <h3>{{ $employees }}</h3>
                         </div>
                       </div>
                       <div class="col-6">
                         <div class="card-small " style="background-color: #4FB3A8">
-                          <h5>Total Companies Frozen</h5>
-                          <h3>{{ $frozenCompanies }}</h3>
+                          <h5>Total Ongoing Requests</h5>
+                          <h3>{{ $ongoingRequests }}</h3>
+                        </div>
+                      </div>
+                      @endif
+                      <div class="col-6">
+                        <div class="card-small " style="background-color: #1F7972">
+                          <h5>Total Requests Pending</h5>
+                          <h3>{{ $pendingRequests }}</h3>
+                          
                         </div>
                       </div>
                       <div class="col-6">

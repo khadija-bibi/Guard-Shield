@@ -13,10 +13,14 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $employees = Employee::latest()->paginate(5);
+        $userCompanyId = auth()->user()->company_id;
+        $employees = Employee::where('company_id', $userCompanyId)
+                            ->latest()
+                            ->paginate(5);
+        
+        
         return view('panel.HRM.employees.index', [
             'employees' => $employees,
-    
         ]);
     }
     public function detail(String $id)
@@ -34,10 +38,8 @@ class EmployeeController extends Controller
     public function create()
     {
         $companyId = auth()->user()->company_id;
-
-    // Fetch all users of the logged-in user's company
     $users = User::where('company_id', $companyId)
-             ->where('user_type', '!=', 'companyOwner') // owner exclude
+             ->where('user_type', '!=', 'companyOwner')
              ->get();
 
 
@@ -78,7 +80,7 @@ class EmployeeController extends Controller
         'location' => $request->location,
         'user_id' => $request->user_id,
         'created_by'=> auth()->user()->id,
-        'company_id' => auth()->user()->company_id, // YAHAN ADD KIA
+        'company_id' => auth()->user()->company_id, 
     ]);
 
     return redirect()->route('employees.index')->with('success', 'Employee created successfully!');
@@ -98,60 +100,58 @@ class EmployeeController extends Controller
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
-{
-    $employee = Employee::findOrFail($id);
+    {
+        $employee = Employee::findOrFail($id);
 
-    $companyId = auth()->user()->company_id;
+        $companyId = auth()->user()->company_id;
+        $users = User::where('company_id', $companyId)
+                    ->where('user_type', '!=', 'companyOwner')
+                    ->get();
 
-    // Fetch all users of the logged-in user's company except owner
-    $users = User::where('company_id', $companyId)
-                 ->where('user_type', '!=', 'companyOwner')
-                 ->get();
-
-    return view('panel.HRM.employees.edit', compact('employee', 'users'));
-}
-
-public function update(Request $request, string $id)
-{
-    $employee = Employee::findOrFail($id);
-
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'phone' => 'required|string|max:20',
-        'address' => 'required|string|max:255',
-        'image' => 'nullable|image|mimes:jpg,png,jpeg|max:5120',
-        'salary' => 'required|numeric',
-        'salary_type' => 'required|string|in:Monthly,Weekly,Daily,Hourly',
-        'qualification' => 'required|string|max:255',
-        'designation' => 'required|string|max:255',
-        'user_id' => 'nullable|exists:users,id',
-    ]);
-
-    // Handle image update
-    if ($request->hasFile('image')) {
-        // delete old image if exists
-        if ($employee->image && \Storage::disk('public')->exists($employee->image)) {
-            \Storage::disk('public')->delete($employee->image);
-        }
-
-        $employee->image = $request->file('image')->store('uploads/employees', 'public');
+        return view('panel.HRM.employees.edit', compact('employee', 'users'));
     }
 
-    // Update fields
-    $employee->update([
-        'name' => $request->name,
-        'phone' => $request->phone,
-        'address' => $request->address,
-        'salary' => $request->salary,
-        'salary_type' => $request->salary_type,
-        'qualification' => $request->qualification,
-        'designation' => $request->designation,
-        'location' => $request->location,
-        'user_id' => $request->user_id,
-    ]);
+    public function update(Request $request, string $id)
+    {
+        $employee = Employee::findOrFail($id);
 
-    return redirect()->route('employees.index')->with('success', 'Employee updated successfully!');
-}
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'address' => 'required|string|max:255',
+            'image' => 'nullable|image|mimes:jpg,png,jpeg|max:5120',
+            'salary' => 'required|numeric',
+            'salary_type' => 'required|string|in:Monthly,Weekly,Daily,Hourly',
+            'qualification' => 'required|string|max:255',
+            'designation' => 'required|string|max:255',
+            'user_id' => 'nullable|exists:users,id',
+        ]);
+
+        // Handle image update
+        if ($request->hasFile('image')) {
+            // delete old image if exists
+            if ($employee->image && \Storage::disk('public')->exists($employee->image)) {
+                \Storage::disk('public')->delete($employee->image);
+            }
+
+            $employee->image = $request->file('image')->store('uploads/employees', 'public');
+        }
+
+        // Update fields
+        $employee->update([
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'salary' => $request->salary,
+            'salary_type' => $request->salary_type,
+            'qualification' => $request->qualification,
+            'designation' => $request->designation,
+            'location' => $request->location,
+            'user_id' => $request->user_id,
+        ]);
+
+        return redirect()->route('employees.index')->with('success', 'Employee updated successfully!');
+    }
 
 
     /**

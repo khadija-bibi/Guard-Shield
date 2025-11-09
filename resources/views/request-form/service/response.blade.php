@@ -1,10 +1,10 @@
-@extends('layouts.app')
+@extends('layouts.main')
 @section('title', 'My Request-Response')
 @section('content')
 
     <div>
         <span class="navbar-brand fw-semibold" style="color: #9e9e9e;">
-            CRM / Service Request<span class="text-dark"> / Response</span>
+            Service Request<span class="text-dark"> / Response</span>
         </span>
 
         <div class="bg-white p-5 rounded shadow-sm">

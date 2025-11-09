@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Company;
 use App\Models\Document;
+use App\Models\User;
+use App\Notifications\NewCompanyRequestNotification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -22,13 +24,9 @@ class CompanyController extends Controller implements HasMiddleware
     }
     public function index()
     {
-        // $users = User::where('created_by', auth()->id())->latest()->get(); // Filter users by current user ID
-        // $roles = Role::where('created_by', auth()->id())->orderBy('role_name', 'ASC')->get(); // Filter roles by current user ID
-        // // dd($roles);
         $companies = Company::Latest()->get();
         return view('panel.customer-management.companies.index', [
             'companies' => $companies,
-            // 'roles' => $roles,
         ]);
         
     }
@@ -36,14 +34,12 @@ class CompanyController extends Controller implements HasMiddleware
         $company = Company::with('documents')->findOrFail($id);        
         return view('panel.customer-management.companies.detail', [
             'company' => $company,
-            // 'roles' => $roles,
         ]);
     }
     public function docs(String $id){
         $company = Company::with('documents')->findOrFail($id);        
         return view('panel.customer-management.companies.docs', [
             'company' => $company,
-            // 'roles' => $roles,
         ]);
     }
     public function create()
@@ -54,7 +50,7 @@ class CompanyController extends Controller implements HasMiddleware
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:45|min:3|unique:companies,email',
+            'name' => 'required|string|max:45|min:3|unique:companies,name',
             'address' => 'required|string|max:255|min:3',
             'email' => 'required|email|unique:companies,email',
             'documents' => 'required',
@@ -91,13 +87,16 @@ class CompanyController extends Controller implements HasMiddleware
                 ]);
             }
         }
+        $admins = User::whereIn('user_type', ['superAdmin', 'adminEmployee'])->get();
 
+        foreach ($admins as $admin) {
+            $admin->notify(new NewCompanyRequestNotification($company, auth()->user()));
+        }
         return redirect()->route('dashboard')->with('success', 'Company details submitted for verification.');
     }
     public function download($id)
     {
         $document = Document::findOrFail($id);
-        // return Storage::download($document->url, $document->name);
         return Storage::disk('public')->download($document->url, $document->name);
 
     }
@@ -123,6 +122,15 @@ class CompanyController extends Controller implements HasMiddleware
             return redirect()->back()->with('success', 'Company has been dropped successfully.');
         }
         return redirect()->back()->with('error', 'Company not found.');
+    }
+
+    public function showCompanies()
+    {
+        $companies = Company::withAvg('feedbacks', 'rating')
+            ->latest()
+            ->get();
+
+        return view('request-form.service.companies', compact('companies'));
     }
 
 

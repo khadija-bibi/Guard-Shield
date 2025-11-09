@@ -6,7 +6,10 @@ use App\Models\AreaZone;
 use App\Models\Company;
 use App\Models\Location;
 use App\Models\Request as ServiceRequest;
+use App\Models\User;
+use App\Notifications\NewServiceRequestNotification;
 use Illuminate\Http\Request;
+use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 class RequestController extends Controller
@@ -14,7 +17,7 @@ class RequestController extends Controller
     
     public function index()
     {
-        $requests = ServiceRequest::where('users_id', Auth::id())->latest()->paginate(5); 
+        $requests = ServiceRequest::where('users_id', Auth::id())->latest()->get(); 
         return view('request-form.service.index', [
             'requests' => $requests,
         ]);
@@ -73,9 +76,14 @@ class RequestController extends Controller
         $serviceRequest->budget        = $request->budget;
         $serviceRequest->save();
 
-        
+        $companyUsers = User::where('company_id', $serviceRequest->company_id)->get();
+
+        foreach ($companyUsers as $companyUser) {
+                    $companyUser->notify(new NewServiceRequestNotification($serviceRequest, auth()->user()));
+                }
         return redirect()->route('my-requests.index')->with('success', 'Service Request created successfully!');
 
     }
+    
    
 }

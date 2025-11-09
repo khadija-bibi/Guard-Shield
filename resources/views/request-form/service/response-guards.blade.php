@@ -1,16 +1,16 @@
-@extends('layouts.app')
+@extends('layouts.main')
 @section('title', 'My Request-Response-Assigned Guards')
 @section('content')
 
 <div>
     <span class="navbar-brand fw-semibold" style="color: #9e9e9e;">
-        CRM / Service Request <span class="text-dark">/ Response / Assigned Guards</span>
+        Service Request / Response <span class="text-dark">/ Assigned Guards</span>
     </span>
 
     <div class="bg-white p-5 rounded shadow-sm">
 
         {{-- Back Button --}}
-        <a class="btn btn-custom" href="{{ route('services-request.index') }}">Back</a>
+        <a class="btn btn-custom" href="{{ url()->previous() }}">Back</a>
 
         {{-- Success Message --}}
         @if(session('success'))

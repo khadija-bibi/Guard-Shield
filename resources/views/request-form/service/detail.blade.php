@@ -1,14 +1,14 @@
-@extends('layouts.app')
+@extends('layouts.main')
 @section('title', 'My Request-Detail')
 @section('content')
 
     <div>
         <span class="navbar-brand fw-semibold" style="color: #9e9e9e;">
-            CRM / Service Request<span class="text-dark"> / Details</span>
+            Service Request<span class="text-dark"> / Details</span>
         </span>
 
         <div class="bg-white p-5 rounded shadow-sm">
-            <a class="btn-custom btn btn-custom " href="{{route('my-requests.index')}}">Back</a>
+            <a class="btn-custom btn btn-custom " href="{{ url()->previous() }}">Back</a>
 
             <div class="container">
                 <table class="w-full ">

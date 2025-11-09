@@ -21,75 +21,61 @@ class RoleController extends Controller implements HasMiddleware
             // new Middleware('permission:delete roles', only: ['destroy']),
         ];
     }
-    /**
-     * Display a listing of the resource.
-     */
-    // public function index()
-    // {
-    //     $roles=Role::with('permissions')->get();
-    //     return view('panel.user-management.roles.index',[
-    //         'roles'=>$roles
-    //     ]);
-       
+   
+    public function index()
+    {
+        $user = auth()->user();
 
-    // }
-public function index()
-{
-    $user = auth()->user();
+        if ($user->user_type === 'superAdmin') {
+            $adminEmployeeIds = User::where('user_type', 'adminEmployee')->pluck('id');
 
-    if ($user->user_type === 'superAdmin') {
-        $adminEmployeeIds = User::where('user_type', 'adminEmployee')->pluck('id');
+            $roles = Role::with('permissions')
+                ->where(function ($query) use ($user, $adminEmployeeIds) {
+                    $query->where('created_by', $user->id)
+                        ->orWhereIn('created_by', $adminEmployeeIds);
+                })
+                    ->latest()
+                    ->paginate(4);
+        }else if ($user->user_type === 'adminEmployee') {
+            $superAdminIds = User::where('user_type', 'superAdmin')->pluck('id');
 
-        $roles = Role::with('permissions')
-            ->where(function ($query) use ($user, $adminEmployeeIds) {
-                $query->where('created_by', $user->id)
-                      ->orWhereIn('created_by', $adminEmployeeIds);
-            })
+            $roles = Role::with('permissions')
+                ->where(function ($query) use ($user, $superAdminIds) {
+                    $query->where('created_by', $user->id)
+                        ->orWhereIn('created_by', $superAdminIds);
+                })
                 ->latest()
                 ->paginate(4);
-    }else if ($user->user_type === 'adminEmployee') {
-        $superAdminIds = User::where('user_type', 'superAdmin')->pluck('id');
+        }else if ($user->user_type === 'companyOwner') {
+            $companyEmployeeIds = User::where('user_type', 'companyEmployee')->where('created_by', auth()->user()->id)->pluck('id');
 
-        $roles = Role::with('permissions')
-            ->where(function ($query) use ($user, $superAdminIds) {
-                $query->where('created_by', $user->id)
-                      ->orWhereIn('created_by', $superAdminIds);
-            })
-            ->latest()
-            ->paginate(4);
-    }else if ($user->user_type === 'companyOwner') {
-        $companyEmployeeIds = User::where('user_type', 'companyEmployee')->where('created_by', auth()->user()->id)->pluck('id');
+            $roles = Role::with('permissions')
+                ->where(function ($query) use ($user, $companyEmployeeIds) {
+                    $query->where('created_by', $user->id)
+                        ->orWhereIn('created_by', $companyEmployeeIds);
+                })
+                ->latest()
+                ->paginate(4);
+        }else if ($user->user_type === 'companyEmployee') {
 
-        $roles = Role::with('permissions')
-            ->where(function ($query) use ($user, $companyEmployeeIds) {
-                $query->where('created_by', $user->id)
-                      ->orWhereIn('created_by', $companyEmployeeIds);
-            })
-            ->latest()
-            ->paginate(4);
-    }else if ($user->user_type === 'companyEmployee') {
+            $roles = Role::with('permissions')
+                ->where(function ($query) use ($user) {
+                    $query->where('created_by', $user->id)
+                        ->orWhere('created_by', $user->created_by);
+                })
+                ->latest()
+                ->paginate(4);
+        } else {
+            // Optional: Fallback for non-superAdmin users
+            $roles = Role::with('permissions')
+                ->where('created_by', $user->id)
+                ->paginate(4);
+        }
 
-        $roles = Role::with('permissions')
-            ->where(function ($query) use ($user) {
-                $query->where('created_by', $user->id)
-                      ->orWhere('created_by', $user->created_by);
-            })
-            ->latest()
-            ->paginate(4);
-    } else {
-        // Optional: Fallback for non-superAdmin users
-        $roles = Role::with('permissions')
-            ->where('created_by', $user->id)
-            ->paginate(4);
+        return view('panel.user-management.roles.index', [
+            'roles' => $roles
+        ]);
     }
-
-    return view('panel.user-management.roles.index', [
-        'roles' => $roles
-    ]);
-}
-
-
-
 
     /**
      * Show the form for creating a new resource.
@@ -122,9 +108,9 @@ public function index()
                 'permissions.*' => 'string|exists:permissions,name',
             ]);
             
-        if ($validator->fails()) {
-        return back()->withInput()->withErrors($validator);
-    }
+            if ($validator->fails()) {
+            return back()->withInput()->withErrors($validator);
+        }
 
 
         $role_name=str()->random(5).$request->name;

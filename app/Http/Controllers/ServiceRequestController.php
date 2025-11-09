@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Request as ServiceRequest;
+use App\Models\User;
+use App\Notifications\ServiceRequestStatusNotification;
 use Illuminate\Http\Request;
 
 class ServiceRequestController extends Controller
@@ -12,7 +14,11 @@ class ServiceRequestController extends Controller
      */
     public function index()
     {
-        $requests = ServiceRequest::latest()->latest()->paginate(4);
+        $userCompanyId = auth()->user()->company_id;
+        $requests = ServiceRequest::where('company_id', $userCompanyId)
+                            ->latest()
+                            ->paginate(5);
+        
         return view('panel.CRM.service-request.index', [
             'requests' => $requests,
             // 'roles' => $roles,
@@ -25,7 +31,6 @@ class ServiceRequestController extends Controller
         $request = ServiceRequest::find($id);        
         return view('panel.CRM.service-request.detail', [
             'request' => $request,
-            // 'roles' => $roles,
         ]);
     }
     public function verifyRequest($id, $status)
@@ -38,6 +43,11 @@ class ServiceRequestController extends Controller
 
         $request->status = $status;
         $request->save();
+
+        $companyName = auth()->user()->company->name;
+        $message = "{$companyName} has {$status} your request..";
+
+        $request->user->notify(new ServiceRequestStatusNotification($request, $message));
 
         return redirect()->back()->with('success', "Service request has been {$status}.");
     }
@@ -58,6 +68,11 @@ class ServiceRequestController extends Controller
         $request->payment_status = $status;
         $request->save();
 
+
+        $companyName = auth()->user()->company->name;
+        $message = "{$companyName} has marked payment as DONE for your request.";
+
+        $request->user->notify(new ServiceRequestStatusNotification($request, $message));
         return redirect()->back()->with('success', "Payment status has been marked as {$status}.");
     }
 
@@ -72,6 +87,11 @@ class ServiceRequestController extends Controller
         $request->status = $status;
         $request->save();
 
+        $companyName = auth()->user()->company->name;
+        $message = "{$companyName} has marked COMPLETED for your request.";
+
+        $request->user->notify(new ServiceRequestStatusNotification($request, $message));
+
         return redirect()->back()->with('success', "Service request marked as {$status}.");
     }
 
@@ -85,6 +105,13 @@ class ServiceRequestController extends Controller
 
         $request->status = $status;
         $request->save();
+
+        $companyUsers = User::where('company_id', $request->company_id)->get();
+        $seeker = auth()->user()->name;
+        $message = "{$seeker} has {$status} the reponse for request.";
+        foreach ($companyUsers as $companyUser) {
+            $companyUser->notify(new ServiceRequestStatusNotification($request, $message));
+        }
 
         return redirect()->back()->with('success', "Service request marked as {$status}.");
     }

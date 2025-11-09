@@ -4,6 +4,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\CompanyRequestController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\IncidentController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\ResponseController;
 use App\Http\Controllers\RoleController;
@@ -34,9 +36,6 @@ Route::controller(AuthController::class)->group(function () {
 
 
 Route::middleware('auth',"verified")->group(function () {
-    Route::get('/home', function () {
-        return view('home');
-    })->name('home');
     Route::get('/dashboard', [AuthController::class, 'showDashboard'])->name('dashboard');
     Route::get('/company/create', [CompanyController::class, 'create'])->name('company.create');
     Route::post('/company/store', [CompanyController::class, 'store'])->name('company.store');
@@ -44,8 +43,11 @@ Route::middleware('auth',"verified")->group(function () {
     Route::get('/service/create', [RequestController::class, 'createServiceReq'])->name('service-request.create');
     Route::post('/service/store', [RequestController::class, 'storeServiceReq'])->name('service-request.store');
 
-    Route::get('/get-zones/{location}', [RequestController::class, 'getZones']);
-    Route::resource('request', RequestController::class);
+    Route::get('/companies/show', [CompanyController::class, 'showCompanies'])->name('companies.show');
+    Route::get('/companies/{id}/feedbacks', [FeedbackController::class, 'showFeedbacks'])->name('companies.feedbacks');
+
+
+    // Route::resource('request', RequestController::class);
 
     Route::get('/my-requests', [RequestController::class, 'index'])->name('my-requests.index');
     Route::get('/my-requests/{id}/detail', [RequestController::class, 'detail'])->name('my-request.detail');
@@ -100,5 +102,15 @@ Route::middleware('auth',"verified")->group(function () {
     Route::post('/service-request/confirm-response/{id}/{status}', [ServiceRequestController::class, 'confirmResponse'])->name('service-request.confirmResponse');
     Route::get('/service-request/{id}/create-response', [ResponseController::class, 'create'])->name('service-request.response.create');
     Route::post('/service-request-response/{id}', [ResponseController::class, 'storeResponse']);
+
+    Route::get('/incidents', [IncidentController::class, 'index'])->name('incidents.index');
+    Route::get('/feedbacks/index', [FeedbackController::class, 'index'])->name('feedbacks.index');
+
+    Route::post('/feedback/store', [FeedbackController::class, 'store'])->name('feedback.store');
+
+    Route::get('/notifications/fetch', [App\Http\Controllers\NotificationController::class, 'fetch'])->name('notifications.fetch');
+    Route::post('/notifications/mark-as-read', [App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+
+
 
 });

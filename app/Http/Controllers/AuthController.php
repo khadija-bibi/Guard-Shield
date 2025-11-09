@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Company;
+use App\Models\Employee;
+use App\Models\Request as ServiceRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,84 +24,113 @@ class AuthController extends Controller
     {
         return view('auth.login');
     }
-public function showDashboard()
-{
-    $user = auth()->user();
+    public function showDashboard()
+    {
+        $user = auth()->user();
+        $companyId = auth()->user()->company_id;
+        $verifiedCompanies = Company::where('verification_status', 'Accepted')
+                                    ->where('is_drop', 0)
+                                    ->count();
+        $pendingRequests = ServiceRequest::where('status', 'Pending')
+                                    ->where('payment_status', "Pending")
+                                    ->where('company_id', $companyId)
+                                    ->count();
+        $frozenCompanies = Company::where('verification_status', 'Accepted')
+                                    ->where('is_drop', 0)
+                                    ->where('is_freeze', 1)
+                                    ->count();
+        $ongoingRequests = ServiceRequest::where('status', 'Accepted')
+                                    ->where('payment_status', "DONE")
+                                    ->where('company_id', $companyId)
+                                    ->count();
+        $employees = Employee::where('company_id', $companyId)
+                                    ->count();
 
-    $verifiedCompanies = Company::where('verification_status', 'accept')
-                                ->where('is_drop', 0)
-                                ->count();
-    $pendingRequests = Company::where('verification_status', 'pending')->count();
-    $frozenCompanies = Company::where('verification_status', 'accept')
-                                ->where('is_drop', 0)
-                                ->where('is_freeze', 1)
-                                ->count();
-    $users = User::where('created_by', auth()->id())->count();
+        $users = User::where('company_id', $companyId)->count();
 
-    if ($user->user_type === "superAdmin" || $user->user_type === "adminEmployee") {
-        return view('panel.home.dashboard', [
-            'verifiedCompanies' => $verifiedCompanies,
-            'pendingRequests' => $pendingRequests,
-            'frozenCompanies' => $frozenCompanies,
-            'users' => $users,
-        ]);
-    }
-
-    if ($user->user_type === "companyOwner") {
-            $company = $user->company; 
-
-            if ($company) {
-                if ($company->verification_status == "Pending") {
-                return view('auth.pending-request');
-                }
-                if ($company->verification_status == "Reject") {
-                    return view('auth.rejected-request');
-                }
-                if ($company->is_freeze) {
-                return view('auth.freeze-company');
-                }
-                if ($company->is_drop) {
-                    return view('auth.drop-company');
-                }
-                return view('panel.home.dashboard', [
-                            'verifiedCompanies' => $verifiedCompanies,
-                            'pendingRequests' => $pendingRequests,
-                            'frozenCompanies' => $frozenCompanies,
-                            'users' => $users,
-                        ]);            
-            }
-            return redirect()->route('company.create');
-        }
-
-        if ($user->user_type === "serviceSeeker") {
-            return redirect()->route('home');
-        }
-        if ($user->user_type === "companyEmployee") {
+        if ($user->user_type === "superAdmin" || $user->user_type === "adminEmployee") {
             return view('panel.home.dashboard', [
-            'verifiedCompanies' => $verifiedCompanies,
-            'pendingRequests' => $pendingRequests,
-            'frozenCompanies' => $frozenCompanies,
-            'users' => $users,
-        ]);
+                'user' => $user,
+                'verifiedCompanies' => $verifiedCompanies,
+                'pendingRequests' => Company::where('verification_status', 'Pending')->count(),
+                'frozenCompanies' => $frozenCompanies,
+                'users' => User::where('created_by', 1)->count(),
+            ]);
         }
-}
-public function showHome(){
-    $user = auth()->user();
-    return view('request-form.service.home');
-}
-public function login(Request $request)
-{
-    $credentials = $request->validate([
-        'email' => 'required|email',
-        'password' => 'required'
-    ]);
 
-    if (Auth::attempt($credentials)) {
-         return redirect()->route('dashboard');
+        if ($user->user_type === "companyOwner") {
+                $company = $user->company; 
+
+                if ($company) {
+                    if ($company->verification_status == "Pending") {
+                    return view('auth.pending-request');
+                    }
+                    if ($company->verification_status == "Reject") {
+                        return view('auth.rejected-request');
+                    }
+                    if ($company->is_freeze) {
+                    return view('auth.freeze-company');
+                    }
+                    if ($company->is_drop) {
+                        return view('auth.drop-company');
+                    }
+                    return view('panel.home.dashboard', [
+                                'user' => $user,
+                                'employees' => $employees,
+                                'ongoingRequests' => $ongoingRequests,
+                                'pendingRequests' => $pendingRequests,
+                                'users' => $users,
+                            ]);            
+                }
+                return redirect()->route('company.create');
+            }
+
+            if ($user->user_type === "serviceSeeker") {
+                return redirect()->route('home');
+            }
+            if ($user->user_type === "companyEmployee") {
+                return view('panel.home.dashboard', [
+                    'user' => $user,
+                    'employees' => $employees,
+                    'ongoingRequests' => $ongoingRequests,
+                    'pendingRequests' => $pendingRequests,
+                    'users' => $users,
+            ]);
+            }
+    }
+    public function showHome()
+    {
+        $user = auth()->user();
+
+        // 1️⃣ Total requests made by the logged-in user
+        $totalRequests = \App\Models\Request::where('users_id', $user->id)->count();
+
+        // 2️⃣ Active requests (status = 'Accepted' AND payment_status = 'Paid')
+        $activeRequests = \App\Models\Request::where('users_id', $user->id)
+            ->where('status', 'ACCEPTED')
+            ->where('payment_status', 'DONE')
+            ->count();
+
+        // 3️⃣ Total available companies
+        $companies = \App\Models\Company::count();
+
+        // Return all to the view
+        return view('request-form.service.home', compact('totalRequests', 'activeRequests', 'companies'));
     }
 
-    return back()->withErrors(['email' => 'Invalid credentials']);
-}
+    public function login(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
+
+        if (Auth::attempt($credentials)) {
+            return redirect()->route('dashboard');
+        }
+
+        return back()->withErrors(['email' => 'Invalid credentials']);
+    }
 
 
     public function logout()

@@ -5,17 +5,26 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Response extends Model
+class Feedback extends Model
 {
     use HasFactory;
 
+    protected $table = 'feedbacks';
+
     protected $fillable = [
         'request_id',
+        'user_id',
         'company_id',
-        'description',
-        'quotation',
+        'comment',
+        'rating', 
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    
     public function request()
     {
         return $this->belongsTo(Request::class);
@@ -24,9 +33,5 @@ class Response extends Model
     public function company()
     {
         return $this->belongsTo(Company::class);
-    }
-    public function employees()
-    {
-        return $this->belongsToMany(Employee::class, 'response_has_guards', 'response_id', 'employee_id')->withTimestamps();
     }
 }

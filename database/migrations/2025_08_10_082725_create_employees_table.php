@@ -28,7 +28,7 @@ return new class extends Migration
             $table->dateTime('clock_in')->nullable();
             $table->dateTime('clock_out')->nullable();
 
-            $table->foreign('user_id', 'fk_employees_users') // custom naam
+            $table->foreign('user_id', 'fk_employees_users') 
                   ->references('id')
                   ->on('users')
                   ->onDelete('cascade');

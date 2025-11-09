@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Request as ServiceRequest;
+use App\Notifications\ServiceRequestStatusNotification;
+
 class ResponseController extends Controller
 {
     /**
@@ -56,6 +58,15 @@ class ResponseController extends Controller
         
         $response->employees()->attach($request->guards);
         \App\Models\Request::where('id', $id)->update(['status' => 'RESPONDED']);
+
+        $companyName = auth()->user()->company->name;
+
+        $message = "{$companyName} has RESPONDED to your request.";
+
+        $request = \App\Models\Request::findOrFail($id);
+
+        $request->user->notify(new ServiceRequestStatusNotification($request, $message));
+
         return redirect()->route('services-request.index')
             ->with('success', 'Service Request Response created successfully!');
     }
@@ -75,15 +86,15 @@ class ResponseController extends Controller
         return view('request-form.service.response', compact('response','request'));
     }
     public function showGuards($id)
-{
-    $response = Response::find($id);
+    {
+        $response = Response::find($id);
 
-    if (!$response) {
-        return redirect()->back()->with('error', 'No response found.');
+        if (!$response) {
+            return redirect()->back()->with('error', 'No response found.');
+        }
+
+        return view('request-form.service.response-guards', compact('response'));
     }
-
-    return view('request-form.service.response-guards', compact('response'));
-}
 
     /**
      * Show the form for editing the specified resource.

@@ -27,4 +27,9 @@ class Company extends Model
     {
         return $this->hasMany(Document::class, 'company_id');
     }
+    public function feedbacks()
+    {
+        return $this->hasMany(Feedback::class, 'company_id');
+    }
+
 }
