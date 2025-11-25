@@ -4,7 +4,7 @@
 
     <div>
         <span class="navbar-brand fw-semibold" style="color: #9e9e9e;">
-            Customer Management / Company<span class="text-dark"> / Details</span>
+            HRM / Employee<span class="text-dark"> / Details</span>
         </span> 
        
         <div class="bg-white p-5 rounded shadow-sm">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Employee;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class EmployeeController extends Controller
 {
@@ -130,8 +131,8 @@ class EmployeeController extends Controller
         // Handle image update
         if ($request->hasFile('image')) {
             // delete old image if exists
-            if ($employee->image && \Storage::disk('public')->exists($employee->image)) {
-                \Storage::disk('public')->delete($employee->image);
+            if ($employee->image && Storage::disk('public')->exists($employee->image)) {
+                Storage::disk('public')->delete($employee->image);
             }
 
             $employee->image = $request->file('image')->store('uploads/employees', 'public');
