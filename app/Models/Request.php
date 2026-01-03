@@ -23,6 +23,7 @@ class Request extends Model
         'paymentPlan',
         'budget',
         'status',
+        'payment_status',
         'company_id', 
     ];
 
@@ -34,5 +35,16 @@ class Request extends Model
     public function company()
     {
         return $this->belongsTo(Company::class, 'company_id');
+    }
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class, 'request_id');
+    }
+    public function response()
+    {
+        return $this->hasOne(\App\Models\Response::class, 'request_id', 'id');
+    }
+    public function feedback() {
+        return $this->hasOne(Feedback::class, 'request_id');
     }
 }

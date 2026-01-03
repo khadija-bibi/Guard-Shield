@@ -84,7 +84,7 @@
                                 @break
 
                             @case('CANCELLED')
-                                <span class="badge text-bg-warning d-inline-flex align-items-center gap-1 px-2 py-1">
+                                <span class="badge d-inline-flex align-items-center gap-1 px-2 py-1" style="background-color:#dc2525b3; color:white;">
                                     {{-- Cancelled Icon --}}
                                     <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-circle-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M10 10l4 4m0 -4l-4 4" /></svg>
                                     Cancelled
@@ -92,7 +92,7 @@
                                 @break
 
                             @case('COMPLETED')
-                                <span class="badge text-bg-info d-inline-flex align-items-center gap-1 px-2 py-1" ">
+                                <span class="badge text-bg-info d-inline-flex align-items-center gap-1 px-2 py-1" style="color: white !important;">
                                     {{-- Completed Icon --}}
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-circle-check"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M9 12l2 2l4 -4" /></svg>
                                     Completed
@@ -119,7 +119,8 @@
                     </td>
                     <td class="px-6 py-3 text-center">
                         {{-- @can('view company request detail') --}}
-                        <a class="btn btn-primary btn-sm" href="{{ route('service-request.detail', $request->id) }}">Details</a>
+                        <a class="btn btn-primary btn-sm" href="{{ route('service-request.detail', $request->id) }}">
+                            Details</a>
                         {{-- @endcan --}}
                         @if ($request -> status=="PENDING")
                            {{-- @can('accept company request') --}}
@@ -135,16 +136,16 @@
                         {{-- @endcan --}}
                         @endif
                         
-                        @if ($request -> status=="ACCEPTED"&&$request -> payment_status=="PENDING")
+                        {{-- @if ($request -> status=="ACCEPTED"&&$request -> payment_status=="PENDING")
                         {{-- @can('reject company request') --}}
-                        <a class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#reqPaidModal{{ $request->id }}">
+                        {{-- <a class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#reqPaidModal{{ $request->id }}">
                             Mark As Paid
-                        </a>
-                        @include('components.reqPaidModal')
+                        </a> --}}
+                        {{-- @include('components.reqPaidModal') --}}
                         {{-- @endcan --}} 
-                        @endif
+                        {{-- @endif  --}}
 
-                        @if ($request -> status=="ACCEPTED"&&$request -> payment_status=="DONE")
+                        @if ($request -> status=="ACCEPTED"&&$request->invoices->where('status', 'PAID'))
                            {{-- @can('reject company request') --}}
                         <a class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#reqCompModal{{ $request->id }}">
                             Mark As Completed
@@ -154,12 +155,17 @@
                         @endif
                         @if ($request->status!="PENDING"&&$request->status!="REJECTED")
                         {{-- @can('view company request detail') --}}
-                        <a class="btn btn-info btn-sm" href="{{ route('my-request.response', $request->id) }}">
+                        <a class="btn btn-info btn-sm" href="{{ route('service-request.response', $request->id) }}">
                             View Response
                         </a>
                         {{-- @endcan --}}  
                         @endif
                         
+                        @if ($request->status=="ACCEPTED"||$request->status=="COMPLETED")
+                        <a class="btn btn-secondary btn-sm" href="{{ route('service-request.request-invoices', $request->id) }}">
+                            View Invoices
+                        </a>
+                        @endif
                     </td>
                 </tr>
                 {{-- @endif --}}

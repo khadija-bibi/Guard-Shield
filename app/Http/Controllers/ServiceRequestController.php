@@ -6,24 +6,36 @@ use App\Models\Request as ServiceRequest;
 use App\Models\User;
 use App\Notifications\ServiceRequestStatusNotification;
 use Illuminate\Http\Request;
-
-class ServiceRequestController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+class ServiceRequestController extends Controller implements HasMiddleware
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+     public static function middleware(): array
     {
-        $userCompanyId = auth()->user()->company_id;
-        $requests = ServiceRequest::where('company_id', $userCompanyId)
-                            ->latest()
-                            ->paginate(5);
-        
-        return view('panel.CRM.service-request.index', [
-            'requests' => $requests,
-            // 'roles' => $roles,
-        ]);
+        return[
+            new Middleware('permission:view requests', only: ['index']),
+            new Middleware('permission:view request detail', only: ['detail']),
+            new Middleware('permission:verify request', only: ['verifyRequest']),
+            new Middleware('permission:verify request payment', only: ['verifyRequest']),
+            new Middleware('permission:mark request completed', only: ['markCompleted']),
+
+        ];
     }
+   
+    public function index()
+{
+    $userCompanyId = auth()->user()->company_id;
+
+    $requests = ServiceRequest::with('invoices') // eager load invoices
+        ->where('company_id', $userCompanyId)
+        ->latest()
+        ->paginate(5);
+
+    return view('panel.CRM.service-request.index', [
+        'requests' => $requests,
+    ]);
+}
+
 
     
 
@@ -43,6 +55,8 @@ class ServiceRequestController extends Controller
 
         $request->status = $status;
         $request->save();
+
+        
 
         $companyName = auth()->user()->company->name;
         $message = "{$companyName} has {$status} your request..";
@@ -112,7 +126,13 @@ class ServiceRequestController extends Controller
         foreach ($companyUsers as $companyUser) {
             $companyUser->notify(new ServiceRequestStatusNotification($request, $message));
         }
-
+        if ($status === 'ACCEPTED') {
+        // Find the response for this request
+        $response = $request->response()->first(); // assuming 1 response per request
+        if ($response) {
+            app(\App\Http\Controllers\InvoiceController::class)->generateInvoices($response);
+        }
+    }
         return redirect()->back()->with('success', "Service request marked as {$status}.");
     }
 

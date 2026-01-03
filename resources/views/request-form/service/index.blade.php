@@ -50,8 +50,8 @@
                                     </span>
                                     @break
                                 @case('RESPONDED')
-                                    <span class="badge d-inline-flex align-items-center gap-1 px-2 py-1" 
-                                        style="background-color: #0d6efd; color: white;">
+                                    <span class="badge text-bg-secondary d-inline-flex align-items-center gap-1 px-2 py-1" 
+                                        >
                                         {{-- Responded Icon --}}
                                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" 
                                             viewBox="0 0 24 24" fill="none" stroke="white" 
@@ -83,7 +83,7 @@
                                     @break
 
                                 @case('CANCELLED')
-                                    <span class="badge text-bg-secondary d-inline-flex align-items-center gap-1 px-2 py-1">
+                                <span class="badge d-inline-flex align-items-center gap-1 px-2 py-1" style="background-color:#dc2525b3; color:white;">
                                         {{-- Cancelled Icon --}}
                                         <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-circle-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M10 10l4 4m0 -4l-4 4" /></svg>
                                         Cancelled
@@ -129,7 +129,7 @@
                             </a>
                             {{-- @endcan --}}  
                             @endif
-                            @if ($request->status=="COMPLETED"&&$request->payment_status=="DONE")
+                            @if ($request->status=="COMPLETED" && !$request->feedback)
                             {{-- @can('view company request detail') --}}
                             <a class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#feedbackModal{{ $request->id }}">
                                 Give Feedback
@@ -137,7 +137,11 @@
                             @include('components.feedbackModal')
                             {{-- @endcan --}}  
                             @endif
-                            
+                            @if ($request->status=="ACCEPTED"||$request->status=="COMPLETED")
+                            <a class="btn btn-secondary btn-sm" href="{{ route('service-request.invoices', $request->id) }}">
+                                View Invoices
+                            </a>
+                            @endif
                         </td>
                     </tr>
                     {{-- @endif --}}

@@ -8,7 +8,7 @@
         </span>
 
         <div class="bg-white p-5 rounded shadow-sm">
-            <a class="btn-custom btn btn-custom " href="{{ url()->previous() }}">Back</a>
+            <a class="btn-custom btn btn-custom " href="{{route('my-requests.index')}}">Back</a>
 
             <div class="container">
                 <table class="w-full ">

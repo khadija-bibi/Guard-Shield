@@ -25,12 +25,13 @@ class DatabaseSeeder extends Seeder
         $role = Role::create([
             'name' => 'superAdmin',
             'role_name' => 'Super Admin',
+            'guard_name' => 'web',
             'created_by'=>1
         ]);
-        $permissions = Permission::all();
+        $permissions = Permission::whereBetween('id', [1, 17])->get();
         $role->syncPermissions($permissions);
 
-        $user->assignRole($role->name);
+        $user->assignRole($role);
 
         
     }

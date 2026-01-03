@@ -4,9 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Incident;
 use Illuminate\Http\Request;
-
-class IncidentController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+class IncidentController extends Controller implements HasMiddleware
 {
+     public static function middleware(): array
+    {
+        return[
+            new Middleware('permission:view incidents', only: ['index']),
+        ];
+    }
     public function index()
     {
         $incidents = Incident::with('user')

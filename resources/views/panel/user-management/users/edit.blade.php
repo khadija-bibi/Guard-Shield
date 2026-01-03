@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Roles - Edit')
+@section('title', 'User-Edit')
 @section('content')
     <div>
         <span class="navbar-brand fw-semibold" style="color: #9e9e9e;">

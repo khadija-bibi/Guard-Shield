@@ -5,7 +5,7 @@
 
 <div class="card mt-5 shadow-sm border-0">
     <div class="card-body text-center py-5">
-        <h3 class="fw-bold mb-2">Welcome to Guard Shield 360!</h3>
+        <h3 class="fw-bold mb-2">Welcome {{ Auth::user()->name }} to Guard Shield 360!</h3>
         <p class="text-muted mb-3">
             A unified platform connecting you with trusted security companies.  
             You can browse companies, create service requests, and share feedback easily.
@@ -14,6 +14,7 @@
             <i class="ti ti-plus"></i> Create New Request
         </a>
     </div>
+
 </div>
 <div class="row row-cards mt-3">
     <!-- Total Requests -->

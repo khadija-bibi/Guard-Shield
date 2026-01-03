@@ -19,7 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('company_id');
             
             // Other fields
-            $table->text('description')->nullable();
+            $table->text('description',255)->nullable();
             $table->decimal('quotation', 10, 2);
             
             $table->timestamps();

@@ -47,7 +47,7 @@ class AuthController extends Controller
                                     ->count();
 
         $users = User::where('company_id', $companyId)->count();
-
+        
         if ($user->user_type === "superAdmin" || $user->user_type === "adminEmployee") {
             return view('panel.home.dashboard', [
                 'user' => $user,
@@ -175,7 +175,13 @@ class AuthController extends Controller
                 'role_name' => 'Company Owner',
                 'created_by' => $user->id,
             ]);
-            $permissions = Permission::all(); 
+            $companyPermissionsPart1 = Permission::whereBetween('id', [1, 8])->get();
+            $companyPermissionsPart2 = Permission::whereBetween('id', [18, 33])->get();
+
+            // Merge all sets
+            $permissions = $companyPermissionsPart1
+                ->merge($companyPermissionsPart2)
+                ->unique('id');
             $role->syncPermissions($permissions);
 
             $user->assignRole($role->name);

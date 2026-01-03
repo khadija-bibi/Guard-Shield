@@ -21,7 +21,7 @@
                   <!-- Right Side Metrics -->
                   <div class="col-md-6">
                     <div class="row g-3">
-                      @if ($user->user_type=="superAdmin"||$user->user_type=="superAdmin")
+                      @if ($user->user_type=="superAdmin"||$user->user_type=="adminEmployee")
                         <div class="col-6">
                         <div class="card-small " style="background-color: #154D4B">
                           <h5>Total Companies Registered</h5>

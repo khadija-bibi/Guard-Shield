@@ -12,16 +12,45 @@ use Illuminate\Http\Request;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 class RequestController extends Controller
 {
-    
+
+// In ServiceRequestController.php
+
+// public function getPaymentPlans(Request $request)
+// {
+//     $from = Carbon::parse($request->date_from);
+//     $to   = Carbon::parse($request->date_to);
+
+//     // DURATION KO DINON MEIN CALCULATE KAREIN
+//     $totalDays = $from->diffInDays($to);
+
+//     // Payment Plan Decision: Agar duration 30 din ya usse zyada hai
+//     if ($totalDays >= 30) { 
+//         $allowedPlans = ['Monthly', 'One_time'];
+//     } else {
+//         // Agar duration 30 din se kam hai
+//         $allowedPlans = ['One_time'];
+//     }
+
+//     return response()->json([
+//         'plans' => $allowedPlans
+//     ]);
+// }
+ 
     public function index()
-    {
-        $requests = ServiceRequest::where('users_id', Auth::id())->latest()->get(); 
-        return view('request-form.service.index', [
-            'requests' => $requests,
-        ]);
-    }
+{
+    $requests = ServiceRequest::with('feedback') // eager load feedback
+        ->where('users_id', Auth::id())
+        ->latest()
+        ->get(); 
+
+    return view('request-form.service.index', [
+        'requests' => $requests,
+    ]);
+}
+
 
     public function detail(String $id){
         $request = ServiceRequest::find($id);        
@@ -44,9 +73,8 @@ class RequestController extends Controller
         $request->validate([
             'company_id'    => 'required|exists:companies,id',
             'location_address'      => 'required|string|max:255',
-            // 'location_lat'      => 'required|decimal',
-            // 'location_lng'      => 'required|decimal',
-
+            'location_lat' => 'required|numeric|between:-90,90',
+            'location_lng' => 'required|numeric|between:-180,180',
             'crewtype'     => 'required|string',
             'description'   => 'nullable|string',
             'severity'      => 'required|string|in:Low,Medium,High',
@@ -54,7 +82,7 @@ class RequestController extends Controller
             'date_to'       => 'required|date|after_or_equal:date_from',
             'time_from'     => 'required|date_format:H:i',
             'time_to'       => 'required|date_format:H:i',
-            'paymentPlan'  => 'required|string|in:Monthly,Weekly,One_time',
+            'paymentPlan'  => 'required|string|in:Monthly,One_time',
             'budget'        => 'required|numeric|min:1',
         ]);
 

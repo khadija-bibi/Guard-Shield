@@ -58,10 +58,26 @@
                 </table>
                 @if ($request->status=="RESPONDED")
                 {{-- @can('reject company request') --}}
+                {{-- <a class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#reqAcceptModal{{ $response->request_id }}">
+                    Accept
+                </a>
+                @include('components.reqAcceptModal') --}}
+                @php
+                $invoice = \App\Models\Invoice::where('request_id', $response->request_id)->first();
+                @endphp
+
+                {{-- @if($invoice)
+                
+                @endif --}}
+
                 <a class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#reqAcceptModal{{ $response->request_id }}">
                     Accept
                 </a>
                 @include('components.reqAcceptModal')
+                {{-- @endcan --}}
+                
+
+               
                 {{-- @endcan --}} 
                 {{-- {-- @can('reject company request') --}} 
                 <a class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#reqCancelModal{{ $response->request_id }}">

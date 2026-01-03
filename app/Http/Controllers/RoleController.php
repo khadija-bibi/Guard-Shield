@@ -80,51 +80,83 @@ class RoleController extends Controller implements HasMiddleware
     /**
      * Show the form for creating a new resource.
      */
+    private function getFilteredPermissions()
+    {
+        $user = auth()->user();
+
+        // Default empty
+        $permissions = collect();
+
+        if (in_array($user->user_type, ['superAdmin', 'adminEmployee'])) {
+            $permissions = Permission::whereBetween('id', [1, 17])->get();
+        }
+
+        elseif (in_array($user->user_type, ['companyOwner', 'companyEmployee'])) {
+            $companyPermissionsPart1 = Permission::whereBetween('id', [1, 8])->get();
+            $companyPermissionsPart2 = Permission::whereBetween('id', [18, 32])->get();
+
+            // Merge all sets
+            $permissions = $companyPermissionsPart1
+                ->merge($companyPermissionsPart2)
+                ->unique('id');
+        }
+
+        return $permissions;
+    }
+
+
     public function create()
     {
-        $permissions = Permission::orderBy('name','ASC')->get();
-        return view('panel.user-management.roles.create',[
-            'permissions'=> $permissions
+        return view('panel.user-management.roles.create', [
+            'permissions' => $this->getFilteredPermissions()
         ]);
     }
+
+
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-    
-            $validator = Validator::make($request->all(), [
-                'name' => [
-                    'required',
-                    'string',
-                    'max:255',
-                    Rule::unique('roles', 'role_name')->where(function ($query) {
-                        return $query->where('created_by', auth()->id());
-                    }),
-                ],
+        // Get allowed permissions for this user type
+        $allowedPermissions = $this->getFilteredPermissions()->pluck('name')->toArray();
 
-                'permissions' => 'required|array',
-                'permissions.*' => 'string|exists:permissions,name',
-            ]);
-            
-            if ($validator->fails()) {
+        $validator = Validator::make($request->all(), [
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('roles', 'role_name')->where(function ($query) {
+                    return $query->where('created_by', auth()->id());
+                }),
+            ],
+            'permissions' => 'required|array',
+            'permissions.*' => [
+                'string',
+                Rule::in($allowedPermissions), // Filter: only allowed permissions
+            ],
+        ]);
+
+        if ($validator->fails()) {
             return back()->withInput()->withErrors($validator);
         }
 
+        $role_name = str()->random(5) . $request->name;
 
-        $role_name=str()->random(5).$request->name;
         $role = Role::create([
-            'name' => $role_name,
+            'name'      => $role_name,
             'role_name' => $request->name,
-            'created_by' =>auth()->id(),
+            'created_by'=> auth()->id(),
         ]);
-        if (!empty($request->permissions) && is_array($request->permissions)) {
-            $permissions = Permission::whereIn('name', $request->permissions)->get();
-            $role->syncPermissions($permissions);
-        }
+
+        // Assign only allowed permissions
+        $validPermissions = Permission::whereIn('name', $request->permissions)->get();
+        $role->syncPermissions($validPermissions);
+
         return redirect()->back()->with('success', 'Role created successfully!');
     }
+
     
     /**
      * Display the specified resource.
@@ -141,9 +173,8 @@ class RoleController extends Controller implements HasMiddleware
     {
         $role = Role::findOrFail($id);
         $hasPermissions=$role->permissions->pluck('name');
-        $permissions = Permission::orderBy('name','ASC')->get();
         return view('panel.user-management.roles.edit',[
-            'permissions'=> $permissions,
+            'permissions' => $this->getFilteredPermissions(),
             'hasPermissions'=>$hasPermissions,
             'role'=>$role
         ]);
@@ -156,10 +187,15 @@ class RoleController extends Controller implements HasMiddleware
 {
     $role = Role::findOrFail($id);
 
+    $allowedPermissions = $this->getFilteredPermissions()->pluck('name')->toArray();
+
     $validator = Validator::make($request->all(), [
         'name' => 'required|unique:roles,role_name,' . $id . ',id|min:3',
         'permission' => 'required|array|min:1',
-        'permission.*' => 'string|exists:permissions,name',
+        'permission.*' => [
+            'string',
+            Rule::in($allowedPermissions),   // restrict to allowed values only
+        ],
     ], [
         'permission.required' => 'At least one permission is required.',
     ]);
@@ -170,13 +206,17 @@ class RoleController extends Controller implements HasMiddleware
                          ->withErrors($validator);
     }
 
+    // Update role name
     $role->role_name = $request->name;
     $role->save();
 
-    $role->syncPermissions($request->permission);
+    // Sync only allowed + valid permissions
+    $validPermissions = Permission::whereIn('name', $request->permission)->get();
+    $role->syncPermissions($validPermissions);
 
     return redirect()->route('roles.index')->with('success', 'Role updated successfully!');
 }
+
 
 
     /**

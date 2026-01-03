@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Attendance extends Model
+class Attendence extends Model
 {
     use HasFactory;
 
-    protected $table = 'attendance';
+    protected $table = 'attendence';
 
     protected $fillable = [
         'employee_id',
@@ -17,7 +17,6 @@ class Attendance extends Model
         'clock_out',
         'working_hours',
         'overtime_hours',
-        'status',
     ];
 
     public function employee()

@@ -13,6 +13,7 @@
                     <th class="px-6 py-3 text-left" width="60">#</th>
                     <th class="px-6 py-3 text-left">Name</th>
                     <th class="px-6 py-3 text-left">Email</th>
+                    <th class="px-6 py-3 text-left">Created_At</th>
                     <th class="px-6 py-3 text-left">Description</th>
                 </tr>
             </thead>
@@ -28,6 +29,9 @@
                     </td>
                     <td class="px-6 py-3 text-left">
                         {{$incident -> user->email}}
+                    </td>
+                    <td class="px-6 py-3 text-left">
+                        {{ \Carbon\Carbon::parse($incident->created_at)->format('d M, Y h:i A') }}
                     </td>
                     <td class="px-6 py-3 text-left">
                         <a class="btn btn-primary btn-sm" 

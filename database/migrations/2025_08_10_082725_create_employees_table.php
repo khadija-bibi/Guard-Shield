@@ -18,15 +18,11 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->nullable(); 
             $table->unsignedBigInteger('created_by')->nullable();
             $table->string('phone', 45);
-            $table->string('address', 45);
-            $table->string('image', 255)->nullable();
+            $table->string('address', 200);
+            $table->string('image', 500)->nullable();
             $table->integer('salary');
-            $table->string('salary_type', 45);
-            $table->string('qualification', 45);
+            $table->string('qualification', 100);
             $table->string('designation', 45);
-            $table->string('location', 45)->nullable();
-            $table->dateTime('clock_in')->nullable();
-            $table->dateTime('clock_out')->nullable();
 
             $table->foreign('user_id', 'fk_employees_users') 
                   ->references('id')

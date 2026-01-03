@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="container mt-5">
-    <a class="btn-custom btn btn-custom " href="{{ url()->previous() }}">Back</a>
+    <a class="btn-custom btn btn-custom " href="{{route('companies.show')}}">Back</a>
     <h3 class="mb-4 " style="color: #004d40;">{{ $company->name }} - Feedbacks</h3>
 
     @if($feedbacks->isEmpty())

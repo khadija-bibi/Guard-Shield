@@ -9,12 +9,17 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Request as ServiceRequest;
 use App\Notifications\ServiceRequestStatusNotification;
-
-class ResponseController extends Controller
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+class ResponseController extends Controller implements HasMiddleware
 {
-    /**
-     * Display a listing of the resource.
-     */
+     public static function middleware(): array
+    {
+        return[
+            new Middleware('permission:view request response', only: ['viewResponse','viewGuards']),
+        ];
+    }
+   
     public function index()
     {
         //
@@ -29,7 +34,11 @@ class ResponseController extends Controller
         $request = ServiceRequest::findOrFail($requestId);
         $company = \App\Models\Company::find($companyId);
         $employees = Employee::where('company_id', $companyId)
-             ->where('designation', 'guard')->get();
+        ->where('designation', 'guard')
+        ->whereDoesntHave('responses.request', function($q) {
+            $q->where('status', '!=', 'completed');  // hide guards with active requests
+        })->get();
+
         return view('panel.CRM.service-request.create-response', compact('employees','request','company'));
     }
 
@@ -59,6 +68,7 @@ class ResponseController extends Controller
         $response->employees()->attach($request->guards);
         \App\Models\Request::where('id', $id)->update(['status' => 'RESPONDED']);
 
+
         $companyName = auth()->user()->company->name;
 
         $message = "{$companyName} has RESPONDED to your request.";
@@ -74,6 +84,8 @@ class ResponseController extends Controller
     /**
      * Display the specified resource.
      */
+
+    //////////////seeker////////////
     public function show($id)
     {
         $request = ServiceRequest::findOrFail($id);
@@ -85,6 +97,7 @@ class ResponseController extends Controller
 
         return view('request-form.service.response', compact('response','request'));
     }
+
     public function showGuards($id)
     {
         $response = Response::find($id);
@@ -94,6 +107,33 @@ class ResponseController extends Controller
         }
 
         return view('request-form.service.response-guards', compact('response'));
+    }
+
+    //////////////company////////////
+
+    public function viewResponse($id)
+    {
+        $request = ServiceRequest::findOrFail($id);
+        $response = Response::with('company')->where('request_id', $id)->first(); 
+        
+        if (!$response) {
+            return redirect()->back()->with('error', 'No response found for this request.');
+        }
+
+        return view('panel.CRM.service-request.view-response', compact('response','request'));
+    }
+
+    
+
+    public function viewGuards($id)
+    {
+        $response = Response::find($id);
+
+        if (!$response) {
+            return redirect()->back()->with('error', 'No response found.');
+        }
+
+        return view('panel.CRM.service-request.response-guards', compact('response'));
     }
 
     /**

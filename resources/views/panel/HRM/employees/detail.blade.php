@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Roles')
+@section('title', 'Employee-Details')
 @section('content')
 
     <div>
@@ -38,11 +38,6 @@
                         <tr class="border-b">
                             <th class="px-6 py-3 text-left">Salary</th>
                             <td class="px-6 py-3 text-left">{{ $employee->salary }}</td>
-                        </tr>
-
-                        <tr class="border-b">
-                            <th class="px-6 py-3 text-left">Salary Type</th>
-                            <td class="px-6 py-3 text-left">{{ $employee->salary_type }}</td>
                         </tr>
 
                         <tr class="border-b">

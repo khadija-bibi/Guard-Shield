@@ -7,6 +7,7 @@ use App\Http\Controllers\CompanyRequestController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\IncidentController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\ResponseController;
@@ -45,6 +46,7 @@ Route::middleware('auth',"verified")->group(function () {
     Route::get('/home', [AuthController::class, 'showHome'])->name('home');
     Route::get('/service/create', [RequestController::class, 'createServiceReq'])->name('service-request.create');
     Route::post('/service/store', [RequestController::class, 'storeServiceReq'])->name('service-request.store');
+    // Route::post('/payment-plans', [ServiceRequestController::class, 'getPaymentPlans']);
 
     Route::get('/companies/show', [CompanyController::class, 'showCompanies'])->name('companies.show');
     Route::get('/companies/{id}/feedbacks', [FeedbackController::class, 'showFeedbacks'])->name('companies.feedbacks');
@@ -56,6 +58,9 @@ Route::middleware('auth',"verified")->group(function () {
     Route::get('/my-requests/{id}/detail', [RequestController::class, 'detail'])->name('my-request.detail');
     Route::get('/my-requests/{id}/response', [ResponseController::class, 'show'])->name('my-request.response');
     Route::get('/my-requests/{id}/response/guards', [ResponseController::class, 'showGuards'])->name('my-request.response.guards');
+
+    Route::get('/my-requests/{id}/request-response', [ResponseController::class, 'viewResponse'])->name('service-request.response');
+    Route::get('/my-requests/{id}/request-response/guards', [ResponseController::class, 'viewGuards'])->name('service-request.response.guards');
 
 
     Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
@@ -117,5 +122,16 @@ Route::middleware('auth',"verified")->group(function () {
     Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
     Route::get('/attendance/{id}', [AttendanceController::class, 'show'])->name('attendance.show');
 
+
+    Route::get('/invoice/{id}', [InvoiceController::class, 'show'])->name('invoice.show');
+    Route::post('/invoice/{id}/submit', [InvoiceController::class, 'submitAttachment'])->name('invoice.submit');
+    Route::get('/invoice-payment-status/{id}', [InvoiceController::class, 'paymentStatus']);
+
+Route::get('/service-request/{id}/invoices', [InvoiceController::class, 'viewInvoices'])
+     ->name('service-request.invoices');
+
+     Route::get('/service-request/{id}/request-invoices', [InvoiceController::class, 'viewRequestInvoices'])
+     ->name('service-request.request-invoices');
+    Route::get('/request-invoice/{id}', [InvoiceController::class, 'showInvoice'])->name('request-invoice.show');
 
 });

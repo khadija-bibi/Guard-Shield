@@ -9,14 +9,22 @@ use App\Models\Request as ServiceRequest;
 use App\Models\User;
 use App\Notifications\NewFeedbackNotification;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class FeedbackController extends Controller
+class FeedbackController extends Controller implements HasMiddleware
 {
+     public static function middleware(): array
+    {
+        return[
+            new Middleware('permission:view feedbacks', only: ['index']),
+        ];
+    }
     public function index()
     {
         $feedbacks = feedback::with('user')
             ->where('company_id', auth()->user()->company_id)
-            ->latest()->get();
+            ->latest()->paginate(5);
 
         return view('panel.reviews-and-ratings.index', [
             'feedbacks' => $feedbacks,

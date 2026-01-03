@@ -1,6 +1,7 @@
 <?php
 
 namespace Database\Seeders;
+
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
@@ -14,27 +15,47 @@ class PermissionsSeeder extends Seeder
     {
         $permissions = [
             'view roles',
-            'create roles',
-            'edit roles',
-            'delete roles',
+            'create roles', 
+            'edit roles', 
+            'delete roles', 
 
-            'view users',
-            'create users',
-            'edit users',
-            'delete users',
+            'view users', 
+            'create users', 
+            'edit users', 
+            'delete users', 
 
-            'view companies',
-            'view company detail',
-            'drop company',
-            'freeze/unfreeze company',
-            'view company doc',
-            
-            'view companies request',
-            'view company request detail',
-            'verify company request',
+            'view companies', 
+            'view company detail', 
+            'drop company', 
+            'freeze/unfreeze company', 
+            'view company doc', 
+
+            'view companies request', 
+            'view company request detail', 
+            'verify company request', 
             'view company request doc',
 
-            'access guard app'
+            'access guard app',
+
+            'view employees',
+            'create employees', 
+            'edit employees', 
+            'delete employees',
+
+            'view attendance',
+
+            'view requests',
+            'view request detail',
+            'give response',
+            'verify request',
+            'verify request payment',
+            'mark request completed',
+            'view request response',
+            'view request invoices',
+
+            'view incidents',
+            
+            'view feedbacks',
         ];
 
         foreach ($permissions as $permission) {
@@ -43,5 +64,6 @@ class PermissionsSeeder extends Seeder
                 'guard_name' => 'web',
             ]);
         }
+
     }
 }

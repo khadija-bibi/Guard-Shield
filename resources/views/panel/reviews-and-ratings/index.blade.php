@@ -38,9 +38,9 @@
             @endforeach
 
         @endif
-        {{-- <div class="mt-3 d-flex justify-content-end">
+        <div class="mt-3 d-flex justify-content-end">
             {{ $feedbacks->links() }}
-        </div> --}}
+        </div>
     </div>
 </div> 
 

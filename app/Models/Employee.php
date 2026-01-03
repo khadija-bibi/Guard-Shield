@@ -18,12 +18,8 @@ class Employee extends Model
         'image',
         'user_id',
         'salary',
-        'salary_type',
         'qualification',
         'designation',
-        'location',
-        'clock_in',
-        'clock_out',
         'created_by',
         'company_id', 
     ];

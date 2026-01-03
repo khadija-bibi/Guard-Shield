@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Employee Create')
+@section('title', 'Employee-Create')
 @section('content')
 <div>
     <span class="navbar-brand fw-semibold" style="color: #9e9e9e;">
@@ -69,20 +69,6 @@
                     <p class="text-danger font-medium">{{ $message }}</p>  
                 @enderror
             </div>
-
-            <div class="mb-3">
-                <label for="salary_type" class="form-label fw-medium" style="color: #1B4D3E;">Salary Type</label>
-                <select name="salary_type" id="salary_type" class="form-control" style="border-color: #00827F;">
-                    <option value="">Select Salary Type</option>
-                    <option value="Hourly" {{ old('salary_type') == 'Hourly' ? 'selected' : '' }}>Hourly</option>
-                    <option value="Monthly" {{ old('salary_type') == 'Monthly' ? 'selected' : '' }}>Monthly</option>
-                    <option value="Weekly" {{ old('salary_type') == 'Weekly' ? 'selected' : '' }}>Weekly</option>
-                </select>
-                @error('salary_type')
-                    <p class="text-danger font-medium">{{ $message }}</p>
-                @enderror
-            </div>
-
 
             <div class="mb-3">
                 <label for="qualification" class="form-label fw-medium" style="color: #1B4D3E;">Qualification</label>

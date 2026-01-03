@@ -84,8 +84,6 @@
                             @can('view company doc')
                                 <td class="px-6 py-3 text-left">
                                 <a class="btn btn-info btn-sm" href="{{ route('companies.docs', $company->id) }}">Open</a>
-
-                                {{-- {{$company->user->email}} --}}
                             </td>
                             @endcan
                         </tr>

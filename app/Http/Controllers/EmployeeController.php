@@ -6,12 +6,20 @@ use App\Models\Employee;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class EmployeeController extends Controller
+class EmployeeController extends Controller implements HasMiddleware
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public static function middleware(): array
+    {
+        return[
+            new Middleware('permission:view employees', only: ['index']),
+            new Middleware('permission:edit employees', only: ['edit']),
+            new Middleware('permission:create employees', only: ['create']),
+            new Middleware('permission:delete employees', only: ['destroy']),
+        ];
+    }
     public function index()
     {
         $userCompanyId = auth()->user()->company_id;
@@ -51,41 +59,38 @@ class EmployeeController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-{
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'phone' => 'required|string|max:20',
-        'address' => 'required|string|max:255',
-        'image' => 'nullable|image|mimes:jpg,png,jpeg|max:5120',
-        'salary' => 'required|numeric',
-        'salary_type' => 'required|string|in:Monthly,Weekly,Daily,Hourly',
-        'qualification' => 'required|string|max:255',
-        'designation' => 'required|string|max:255',
-        'user_id' => 'nullable|exists:users,id',
-    ]);
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'address' => 'required|string|max:255',
+            'image' => 'nullable|image|mimes:jpg,png,jpeg|max:5120',
+            'salary' => 'required|numeric',
+            'qualification' => 'required|string|max:255',
+            'designation' => 'required|string|max:255',
+            'user_id' => 'nullable|exists:users,id',
+        ]);
 
-    $imagePath = null;
-    if ($request->hasFile('image')) {
-        $imagePath = $request->file('image')->store('uploads/employees', 'public');
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('uploads/employees', 'public');
+        }
+
+        Employee::create([
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'address' => $request->address,
+            'image' => $imagePath,
+            'salary' => $request->salary,
+            'qualification' => $request->qualification,
+            'designation' => $request->designation,
+            'user_id' => $request->user_id,
+            'created_by'=> auth()->user()->id,
+            'company_id' => auth()->user()->company_id, 
+        ]);
+
+        return redirect()->route('employees.index')->with('success', 'Employee created successfully!');
     }
-
-    Employee::create([
-        'name' => $request->name,
-        'phone' => $request->phone,
-        'address' => $request->address,
-        'image' => $imagePath,
-        'salary' => $request->salary,
-        'salary_type' => $request->salary_type,
-        'qualification' => $request->qualification,
-        'designation' => $request->designation,
-        'location' => $request->location,
-        'user_id' => $request->user_id,
-        'created_by'=> auth()->user()->id,
-        'company_id' => auth()->user()->company_id, 
-    ]);
-
-    return redirect()->route('employees.index')->with('success', 'Employee created successfully!');
-}
 
 
 
@@ -122,7 +127,6 @@ class EmployeeController extends Controller
             'address' => 'required|string|max:255',
             'image' => 'nullable|image|mimes:jpg,png,jpeg|max:5120',
             'salary' => 'required|numeric',
-            'salary_type' => 'required|string|in:Monthly,Weekly,Daily,Hourly',
             'qualification' => 'required|string|max:255',
             'designation' => 'required|string|max:255',
             'user_id' => 'nullable|exists:users,id',
@@ -144,7 +148,6 @@ class EmployeeController extends Controller
             'phone' => $request->phone,
             'address' => $request->address,
             'salary' => $request->salary,
-            'salary_type' => $request->salary_type,
             'qualification' => $request->qualification,
             'designation' => $request->designation,
             'location' => $request->location,
